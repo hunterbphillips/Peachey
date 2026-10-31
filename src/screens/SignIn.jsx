@@ -38,7 +38,6 @@ export function SignIn() {
       <div className="welcome-hero">
         <PeachMark size={88} />
         <h1>Peaches</h1>
-        <p>A private little place for friends.</p>
       </div>
       <div className="glass panel welcome-card">
         {step === 'email' ? (

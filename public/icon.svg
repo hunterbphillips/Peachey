@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" fill="#FBF8F2"/>
+  <rect width="512" height="512" fill="#D4ECFB"/>
   <g transform="translate(64 56) scale(12)">
-    <path d="M16 9.5c-1-2.2-1.4-4-1-5.6" fill="none" stroke="#1D3344" stroke-width="1.4" stroke-linecap="round"/>
-    <path d="M16.2 8.6c1.2-3.4 4.6-5.2 9-4.6-1.3 3.9-5 5.7-9 4.6z" fill="#4BAE7F" stroke="#1D3344" stroke-width="1.2" stroke-linejoin="round"/>
-    <path d="M17.8 7.4c1.8-.9 3.6-1.6 5.6-2" fill="none" stroke="#1D3344" stroke-width=".8" stroke-linecap="round"/>
-    <path d="M16 9.6c-6.3-1.4-11 3.2-11 9.3C5 25.1 9.8 29 16 29s11-3.9 11-10.1c0-6.1-4.7-10.7-11-9.3z" fill="#F4906B" stroke="#1D3344" stroke-width="1.4" stroke-linejoin="round"/>
-    <path d="M16 10.2c-2.4 4.6-2.6 11.6 0 18.2" fill="none" stroke="#1D3344" stroke-width="1.1" stroke-linecap="round"/>
-    <g stroke="#1D3344" stroke-width=".8" stroke-linecap="round" opacity=".5">
+    <path d="M16 9.5c-1-2.2-1.4-4-1-5.6" fill="none" stroke="#14213D" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M16.2 8.6c1.2-3.4 4.6-5.2 9-4.6-1.3 3.9-5 5.7-9 4.6z" fill="#8CD23C" stroke="#14213D" stroke-width="1.2" stroke-linejoin="round"/>
+    <path d="M17.8 7.4c1.8-.9 3.6-1.6 5.6-2" fill="none" stroke="#14213D" stroke-width=".8" stroke-linecap="round"/>
+    <path d="M16 9.6c-6.3-1.4-11 3.2-11 9.3C5 25.1 9.8 29 16 29s11-3.9 11-10.1c0-6.1-4.7-10.7-11-9.3z" fill="#FF8A3D" stroke="#14213D" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M16 10.2c-2.4 4.6-2.6 11.6 0 18.2" fill="none" stroke="#14213D" stroke-width="1.1" stroke-linecap="round"/>
+    <g stroke="#14213D" stroke-width=".8" stroke-linecap="round" opacity=".5">
       <path d="M22.4 25.6l2.4-2.4"/><path d="M20.6 26.9l3.6-3.6"/><path d="M23.6 21.9l1.8-1.8"/><path d="M24.6 18.6l1.2-1.2"/>
     </g>
     <path d="M9.2 14.6c.8-1.3 2-2.2 3.4-2.6" fill="none" stroke="#FFFEFB" stroke-width="1.4" stroke-linecap="round" opacity=".85"/>

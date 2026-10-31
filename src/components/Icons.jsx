@@ -23,7 +23,10 @@ export const CloseIcon = (p) => <svg {...base} {...p}><path d="M6 6l12 12M18 6L6
 export const CopyIcon = (p) => (
   <svg {...base} {...p}><rect x="8.5" y="8.5" width="11" height="11" rx="2.5" /><path d="M15.5 8.5V6.5a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2" /></svg>
 );
-export const PenIcon = (p) => (
+export const ShareIcon = (p) => (
+  <svg {...base} {...p}><path d="M12 3.5v11" /><path d="M8 7.5l4-4 4 4" /><path d="M7 11H5.5v9h13v-9H17" /></svg>
+);
+export const PenIcon =(p) => (
   <svg {...base} {...p} strokeWidth={1.7}>
     <path d="M14.5 5.5l4 4L9 19l-5 1 1-5z" />
     <path d="M12.5 7.5l4 4" />

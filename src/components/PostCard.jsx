@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { api } from '../api/index.js';
 import { ConfirmBar, Menu } from './ui.jsx';
-import { CommentIcon, HeartIcon, LinkIcon, MoreIcon } from './Icons.jsx';
+import { CommentIcon, HeartIcon, LinkIcon, MoreIcon, ShareIcon } from './Icons.jsx';
 import { entryDate, fullDate, joinNames, linkParts, splitLinks } from '../lib/format.js';
 import { Comments } from './Comments.jsx';
+import { sharePost, shareText } from '../lib/share.js';
 
-export function PostCard({ post, me, onEdit, onDeleted, onChanged }) {
+export function PostCard({ post, me, author, onEdit, onDeleted, onChanged }) {
   const [p, setP] = useState(post);
   const [showComments, setShowComments] = useState(false);
   const [hearters, setHearters] = useState(null);
@@ -30,6 +31,23 @@ export function PostCard({ post, me, onEdit, onDeleted, onChanged }) {
   async function remove() {
     await api.deletePost(p);
     onDeleted(p.id);
+  }
+
+  // Share: the device's share sheet where there is one; otherwise copy/open options.
+  const [shareFallback, setShareFallback] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [manualText, setManualText] = useState(null);
+  const authorName = mine ? me.display_name : author?.display_name;
+  async function share() {
+    if (shareFallback) { setShareFallback(false); return; }
+    const result = await sharePost(p, authorName, mine);
+    if (result === 'unsupported') { setShareFallback(true); setCopied(false); setManualText(null); }
+  }
+  function copyText() {
+    const text = shareText(p, authorName, mine);
+    navigator.clipboard.writeText(text)
+      .then(() => { setCopied(true); setManualText(null); })
+      .catch(() => setManualText(text));
   }
 
   const link = p.link_url && linkParts(p.link_url);
@@ -92,7 +110,29 @@ export function PostCard({ post, me, onEdit, onDeleted, onChanged }) {
           aria-expanded={showComments} aria-label={`${p.comment_count} comments`}>
           <CommentIcon /><span>{p.comment_count}</span>
         </button>
+        <button className={`act share ${shareFallback ? 'on-share' : ''}`} onClick={share}
+          aria-label="Share this post" aria-expanded={shareFallback}>
+          <ShareIcon /><span>Share</span>
+        </button>
       </div>
+
+      {shareFallback && (
+        <div className="share-fallback">
+          <p>Send a copy of this post{p.image_url ? ' and its photo' : ''} outside Peachey.</p>
+          <div className="share-options">
+            {(p.body || p.link_url) && (
+              <button className="pill-btn" onClick={copyText}>{copied ? 'Copied' : 'Copy text'}</button>
+            )}
+            {p.image_url && (
+              <a className="pill-btn" href={p.image_url} target="_blank" rel="noopener noreferrer">Open photo</a>
+            )}
+          </div>
+          {manualText && (
+            <textarea className="share-manual" readOnly rows={3} value={manualText}
+              aria-label="Post text to copy" onFocus={(e) => e.target.select()} autoFocus />
+          )}
+        </div>
+      )}
 
       {hearters && hearters.length > 0 && (
         <p className="hearters">Hearted by {joinNames(hearters.map((h) => (h.user_id === me.id ? 'you' : h.display_name)))}</p>

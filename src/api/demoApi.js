@@ -6,12 +6,12 @@ const ago = (mins) => new Date(Date.now() - mins * 60_000).toISOString();
 
 // Little Aero-ish landscape "photos" drawn as SVG.
 function scene(kind) {
-  const P = { // muted, like old hand-tinted postcards
-    dawn:  ['#C9D6D3', '#F1E2CF', '#F3C69C', '#A9B48A', '#7C8A62'],
-    lake:  ['#AFC6C8', '#E9E3D3', '#F4E2BE', '#8FAAA6', '#5E7F7E'],
-    dusk:  ['#B9AFC2', '#E9C7B4', '#F1CF9E', '#A08C9C', '#6E5F72'],
-    mesa:  ['#BCCDD0', '#EFE4D2', '#F4DDB3', '#C98D66', '#9A5B3E'],
-    field: ['#C3D2CF', '#F0E6D4', '#F3DDB0', '#ADBB86', '#76875A'],
+  const P = {
+    dawn:  ['#9FD8F2', '#FFE3CF', '#FFB38C', '#7CCB9A', '#3E9F78'],
+    lake:  ['#6EC3EA', '#D9F2FB', '#FFF4D6', '#5BB8D4', '#2C7FA8'],
+    dusk:  ['#7E9BE0', '#F7B9A6', '#FFD7A0', '#A27FB8', '#5C4E8C'],
+    mesa:  ['#8FD0F0', '#E8F6FC', '#FFF0C9', '#E39A6E', '#B5583A'],
+    field: ['#A6DEF5', '#F3FBFF', '#FFF7D1', '#A5DD8E', '#4FA563'],
   }[kind];
   const [skyTop, skyLow, sun, near, far] = P;
   let ground;

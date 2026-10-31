@@ -120,7 +120,7 @@ export function Feed({ userId, me, go, onCompose, onEdit, refreshKey }) {
         )}
 
         {canSeePosts && posts && posts.map((p) => (
-          <PostCard key={p.id + (p.edited_at ?? '')} post={p} me={me} onEdit={onEdit}
+          <PostCard key={p.id + (p.edited_at ?? '')} post={p} me={me} author={person} onEdit={onEdit}
             onDeleted={(id) => setPosts((list) => list.filter((x) => x.id !== id))} />
         ))}
 

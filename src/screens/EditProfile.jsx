@@ -5,7 +5,6 @@ import { BackIcon } from '../components/Icons.jsx';
 
 export function EditProfile({ me, go, onSaved }) {
   const [name, setName] = useState(me.display_name);
-  const [bio, setBio] = useState(me.bio ?? '');
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -16,7 +15,7 @@ export function EditProfile({ me, go, onSaved }) {
     e.preventDefault();
     setBusy(true); setError('');
     try {
-      await api.updateProfile({ display_name: name.trim(), bio: bio.trim(), avatarFile: file });
+      await api.updateProfile({ display_name: name.trim(), avatarFile: file });
       await onSaved();
       go(`/u/${me.id}`);
     } catch (err) { setError(err.message); setBusy(false); }
@@ -41,10 +40,6 @@ export function EditProfile({ me, go, onSaved }) {
           <label className="field">
             <span>Name</span>
             <input required maxLength={40} value={name} onChange={(e) => setName(e.target.value)} />
-          </label>
-          <label className="field">
-            <span>Bio <small>{bio.length}/160</small></span>
-            <textarea rows={3} maxLength={160} value={bio} onChange={(e) => setBio(e.target.value)} placeholder="A line about you" />
           </label>
           <ErrorNote error={error} />
           <button className="gel-btn wide" disabled={busy || !name.trim()}>{busy ? 'Saving…' : 'Save profile'}</button>

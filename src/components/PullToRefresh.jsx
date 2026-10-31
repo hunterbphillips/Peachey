@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 
-// Pull down from the top of the page to reload. Only switched on where the
-// phone has no pull-to-refresh of its own: the home-screen app (and the demo).
+// Pull past the end of the page to reload. Only switched on where the phone
+// has no pull-to-refresh of its own: the home-screen app (and the demo).
+//   from="top"     pull down at the top (most screens)
+//   from="bottom"  pull up past the bottom (profiles, where the newest post is last)
 const THRESHOLD = 70;
 
-export function PullToRefresh({ enabled, onRefresh }) {
+const atTop = () => window.scrollY <= 0;
+const atBottom = () =>
+  document.documentElement.scrollHeight - (window.scrollY + window.innerHeight) <= 2;
+
+export function PullToRefresh({ enabled, onRefresh, from = 'top' }) {
   const [pull, setPull] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const start = useRef(null);
@@ -13,17 +19,19 @@ export function PullToRefresh({ enabled, onRefresh }) {
 
   useEffect(() => {
     if (!enabled) return;
+    const atEdge = from === 'bottom' ? atBottom : atTop;
     const down = (e) => {
-      if (refreshing || window.scrollY > 0 || document.body.classList.contains('no-scroll')) return;
+      if (refreshing || !atEdge() || document.body.classList.contains('no-scroll')) return;
       start.current = e.touches[0].clientY;
     };
     const move = (e) => {
       if (start.current == null) return;
-      const dy = e.touches[0].clientY - start.current;
-      if (dy <= 0 || window.scrollY > 0) { set(0); return; }
+      const raw = e.touches[0].clientY - start.current;
+      const dy = from === 'bottom' ? -raw : raw;     // reversed when pulling up from the bottom
+      if (dy <= 0 || !atEdge()) { set(0); return; }
       set(Math.min(dy * 0.5, 110));
     };
-    const up = async () => {
+    const up = () => {
       if (start.current == null) return;
       start.current = null;
       const reached = pullRef.current >= THRESHOLD;
@@ -43,14 +51,15 @@ export function PullToRefresh({ enabled, onRefresh }) {
       window.removeEventListener('touchend', up);
       window.removeEventListener('touchcancel', up);
     };
-  }, [enabled, onRefresh, refreshing]);
+  }, [enabled, onRefresh, refreshing, from]);
 
   if (!enabled || (!pull && !refreshing)) return null;
   const ready = pull >= THRESHOLD;
-  const offset = refreshing ? 56 : pull;
+  const offset = (refreshing ? 56 : pull) - 44;
+  const transform = from === 'bottom' ? `translate(-50%, ${-offset}px)` : `translate(-50%, ${offset}px)`;
   return (
-    <div className="ptr" style={{ transform: `translate(-50%, ${offset - 44}px)` }} role="status"
-      aria-label={refreshing ? 'Refreshing' : ready ? 'Release to refresh' : 'Pull to refresh'}>
+    <div className={`ptr ${from === 'bottom' ? 'ptr-bottom' : ''}`} style={{ transform }} role="status"
+      aria-label={refreshing ? 'Refreshing' : ready ? 'Release to refresh' : from === 'bottom' ? 'Pull up to refresh' : 'Pull to refresh'}>
       <span className={`ptr-ball ${refreshing ? 'spinning' : ''}`}
         style={refreshing ? undefined : { transform: `rotate(${pull * 4}deg) scale(${0.6 + Math.min(pull / THRESHOLD, 1) * 0.4})` }} />
     </div>

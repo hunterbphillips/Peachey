@@ -86,13 +86,13 @@ export function makeSupabaseApi(url, anonKey) {
       check(await sb.rpc('redeem_invite', { invite_code: code, name }));
     },
     async getProfile(id) {
-      const rows = check(await sb.from('profiles').select('id, display_name, bio, avatar_path').eq('id', id));
+      const rows = check(await sb.from('profiles').select('id, display_name, avatar_path').eq('id', id));
       if (!rows.length) return null;
       return (await withUrls(rows, [['avatar_path', 'avatar_url']]))[0];
     },
-    async updateProfile({ display_name, bio, avatarFile }) {
+    async updateProfile({ display_name, avatarFile }) {
       const me = await uid();
-      const patch = { display_name, bio };
+      const patch = { display_name };
       if (avatarFile) {
         const blob = await compressImage(avatarFile, { maxSize: 480, square: true });
         patch.avatar_path = await upload('avatar', blob);

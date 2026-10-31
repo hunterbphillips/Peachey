@@ -67,6 +67,31 @@ function initialData() {
     post('jonas', 60 * 24 * 9, 'Moved desks at work and now I can see a tree. Life is good.'),
     post('ruth', 60 * 8, 'Week two in the new place. Took a drive out to the red rocks today.', { image_url: scene('mesa') }),
     post('me', 60 * 24 * 2, 'Welcome to Peachey, everyone! Post whatever you like. No algorithm, no ads, just us.', { image_url: scene('dawn') }),
+    // a longer history for Maya, to show scrolling up into older posts
+    ...[
+      'Planted garlic for next summer. See you in July, little guys.',
+      'The basil has bolted. I have failed the basil.',
+      'Farmers market haul: way too many peppers, zero regrets.',
+      'Rain all day. Perfect excuse to reorganize the seed drawer.',
+      'Tomato seedlings are up! All 48 of them. I may have overdone it.',
+      'Anyone have a good pickling recipe? Asking for my cucumbers.',
+      'Built a little trellis today. It is crooked and I love it.',
+      'First warm day of spring and I immediately got sunburned.',
+      'Compost update: it is, in fact, composting.',
+      'Seed catalogs arrived. This is my Super Bowl.',
+      'Snow on the garden beds. Dreaming of June.',
+      'Made jam from the last of the plums.',
+      'Gave away zucchini to every neighbor. They now avoid me.',
+      'Sunflowers are taller than me. Small victories.',
+      'Harvested the first beans. Ate them all standing in the yard.',
+      'Watering at 6am is a whole vibe.',
+      'Peas! Actual peas!',
+      'Mulched everything. Back hurts. Worth it.',
+      'Found a frog in the lettuce. He lives here now.',
+      'Garden journal, day one. Let’s see how long I keep this up.',
+      'Bought a fig tree on a whim. No regrets yet.',
+      'Strawberries are flowering. The birds are watching.',
+    ].map((body, i) => post('maya', 60 * 24 * (8 + i * 5), body)),
   ];
   const hearts = [
     ['p1', 'theo'], ['p1', 'priya'], ['p1', 'me'], ['p4', 'maya'], ['p4', 'ruth'],
@@ -155,9 +180,9 @@ export function makeDemoApi() {
       db.member = true;
     },
     async getProfile(id) { await wait(); const p = person(id); return p ? { ...p } : null; },
-    async updateProfile({ display_name, bio, avatarFile }) {
+    async updateProfile({ display_name, avatarFile }) {
       await wait(300);
-      Object.assign(db.me, { display_name, bio });
+      Object.assign(db.me, { display_name });
       if (avatarFile) db.me.avatar_url = URL.createObjectURL(avatarFile);
     },
 
@@ -239,12 +264,12 @@ export function makeDemoApi() {
     },
     async markViewed(id) { db.views[id] = new Date().toISOString(); },
 
-    async listPosts(authorId) {
+    async listPosts(authorId, before) {
       await wait();
       if (authorId !== 'me' && db.friendships[authorId] !== 'friends') return { posts: [], hasMore: false };
-      const posts = db.posts.filter((p) => p.author_id === authorId)
-        .sort((a, b) => b.created_at.localeCompare(a.created_at)).map(decorate);
-      return { posts, hasMore: false };
+      const all = db.posts.filter((p) => p.author_id === authorId && (!before || p.created_at < before))
+        .sort((a, b) => b.created_at.localeCompare(a.created_at));
+      return { posts: all.slice(0, 20).map(decorate), hasMore: all.length > 20 };
     },
     async createPost({ body, file, link_url }) {
       await wait(500);

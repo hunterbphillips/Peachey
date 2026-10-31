@@ -671,3 +671,21 @@ html, body { overscroll-behavior-y: contain; }
   color: #2F2550; background: #FFFFFF; border: 2px solid #2F2550;
 }
 .photo-close:hover { background: #FFFFFF; color: #2F2550; }
+
+/* ---------- a person's page: name in the bar, newest post at the bottom ---------- */
+.feed-bar { justify-content: flex-start; gap: 6px; }
+.feed-who { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+.feed-who .avatar { border-width: 1.5px; }
+.feed-name {
+  font-family: var(--display); font-weight: 400; font-size: 21px; line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.feed-bar .menu { margin-left: auto; }
+.feed-page { padding-top: 0; }
+.feed-top { display: flex; justify-content: center; padding: 18px 0 2px; min-height: 40px; }
+.feed-start { font-size: 13.5px; color: var(--ink-faint); }
+.feed-top + .post::before { display: none; }
+/* on a phone, sit the newest post just above the + button */
+.feed-page > .post:last-child { margin-bottom: 8px; }
+
+.ptr-bottom { top: auto; bottom: env(safe-area-inset-bottom, 0px); }

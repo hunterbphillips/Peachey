@@ -30,7 +30,6 @@ export function People({ go, onRequestsChanged }) {
         <Avatar person={m} size={46} />
         <span className="friend-main">
           <span className="friend-name">{m.display_name}</span>
-          {m.bio && <span className="friend-preview">{m.bio}</span>}
         </span>
       </button>
       <FriendButton person={m} status={m.status} onChange={(s) => setStatus(m.id, s)} />

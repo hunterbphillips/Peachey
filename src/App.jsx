@@ -86,7 +86,7 @@ export function App() {
           {userId && me && <button className="text-btn inline" onClick={() => api.signOut()}>See sign-in screens</button>}
         </div>
       )}
-      <PullToRefresh enabled={canPull} onRefresh={refresh} />
+      <PullToRefresh enabled={canPull} onRefresh={refresh} from={route.startsWith('/u/') ? 'bottom' : 'top'} />
       {screen}
       {composer && (
         <Composer editing={composer.editing} onClose={() => setComposer(null)}

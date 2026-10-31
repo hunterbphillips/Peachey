@@ -1,3 +1,4 @@
+import { groupActivity } from '../lib/activity.js';
 // A pretend backend that lives in memory, so the app can be tried with no
 // accounts or setup. Nothing is saved: reloading the page resets it.
 
@@ -75,6 +76,7 @@ function initialData() {
     { post_id: 'p1', author_id: 'theo', body: 'That is a tomato with ambition.', mins: 15 },
     { post_id: 'p1', author_id: 'priya', body: 'Caprese night at Maya’s?', mins: 9 },
     { post_id: 'p2', author_id: 'jonas', body: 'I will take six. Maybe seven.', mins: 60 * 25 },
+    { post_id: 'p4', author_id: 'me', body: 'Which lake? Looks freezing.', mins: 60 * 2.5 },
     { post_id: 'p4', author_id: 'ruth', body: 'Gorgeous. Take me next time!', mins: 60 * 2 },
     { post_id: 'p10', author_id: 'maya', body: 'Love this. Thanks for making it 🍑', mins: 60 * 40 },
   ].map((c, i) => ({ id: 'c' + i, post_id: c.post_id, author_id: c.author_id, body: c.body, created_at: ago(c.mins), edited_at: null }));
@@ -99,9 +101,17 @@ function initialData() {
   // Jonas isn't a friend yet (his comment on Maya's post still shows).
   const friendships = { maya: 'friends', theo: 'friends', priya: 'friends', ruth: 'friends', ben: 'received', jonas: 'none' };
   const commentHearts = [
-    { comment_id: 'c0', user_id: 'maya' }, { comment_id: 'c0', user_id: 'priya' }, { comment_id: 'c1', user_id: 'maya' },
+    { comment_id: 'c0', user_id: 'maya', created_at: ago(12) }, { comment_id: 'c0', user_id: 'priya', created_at: ago(8) },
+    { comment_id: 'c1', user_id: 'maya', created_at: ago(6) }, { comment_id: 'c3', user_id: 'theo', created_at: ago(70) },
   ];
-  return { me, people: [me, ...friends], posts, hearts, comments, commentHearts, views, invites, friendships, signedIn: true, member: true };
+  // Friendship history for the Activity screen.
+  const friendEvents = [
+    { kind: 'friend_request', actor: 'ben', at: ago(45) },
+    { kind: 'joined', actor: 'ruth', at: ago(60 * 24 * 15) },
+    { kind: 'friend_accepted', actor: 'priya', at: ago(60 * 24 * 16) },
+  ];
+  return { me, people: [me, ...friends], posts, hearts, comments, commentHearts, friendEvents, views, invites, friendships,
+    activitySeenAt: ago(60 * 3), signedIn: true, member: true };
 }
 
 export function makeDemoApi() {
@@ -156,6 +166,48 @@ export function makeDemoApi() {
       return db.people.filter((p) => p.id !== 'me')
         .map((p) => ({ ...p, status: db.friendships[p.id] ?? 'none' }))
         .sort((a, b) => ((b.status === 'received') - (a.status === 'received')) || a.display_name.localeCompare(b.display_name));
+    },
+    async listActivity() {
+      await wait();
+      const items = [];
+      const mine = (p) => p.author_id === 'me';
+      const post = (id) => db.posts.find((p) => p.id === id);
+      const snip = (p) => p.body || (p.image_url ? 'your photo' : p.link_url);
+      for (const h of db.hearts) {
+        const p = post(h.post_id);
+        if (p && mine(p) && h.user_id !== 'me') items.push({ kind: 'heart_post', actor_id: h.user_id, post_id: p.id, post_author_id: 'me', snippet: snip(p), created_at: h.created_at });
+      }
+      for (const c of db.comments) {
+        const p = post(c.post_id);
+        if (!p || c.author_id === 'me') continue;
+        if (mine(p)) items.push({ kind: 'comment', actor_id: c.author_id, post_id: p.id, post_author_id: 'me', snippet: c.body, created_at: c.created_at });
+        else {
+          const myFirst = db.comments.filter((x) => x.post_id === p.id && x.author_id === 'me').map((x) => x.created_at).sort()[0];
+          if (myFirst && c.created_at > myFirst) items.push({ kind: 'thread_comment', actor_id: c.author_id, post_id: p.id, post_author_id: p.author_id, snippet: c.body, created_at: c.created_at });
+        }
+      }
+      for (const h of db.commentHearts) {
+        const c = db.comments.find((x) => x.id === h.comment_id);
+        if (c && c.author_id === 'me' && h.user_id !== 'me') items.push({ kind: 'heart_comment', actor_id: h.user_id, post_id: c.post_id, post_author_id: post(c.post_id)?.author_id, snippet: c.body, created_at: h.created_at });
+      }
+      for (const e of db.friendEvents) {
+        if (e.kind === 'friend_request' && db.friendships[e.actor] !== 'received') continue;
+        items.push({ kind: e.kind, actor_id: e.actor, post_id: null, post_author_id: null, snippet: null, created_at: e.at });
+      }
+      return items.map((i) => ({
+        ...i,
+        actor_name: person(i.actor_id).display_name, actor_avatar_url: person(i.actor_id).avatar_url,
+        post_author_name: i.post_author_id ? person(i.post_author_id).display_name : null,
+      })).sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 60);
+    },
+    async activityUnread() {
+      const items = await this.listActivity();
+      return groupActivity(items.filter((i) => i.created_at > db.activitySeenAt)).length;
+    },
+    async markActivitySeen() {
+      const previous = db.activitySeenAt;
+      db.activitySeenAt = new Date().toISOString();
+      return previous;
     },
     async friendshipStatus(id) { await wait(80); return id === 'me' ? 'me' : db.friendships[id] ?? 'none'; },
     async sendFriendRequest(id) {

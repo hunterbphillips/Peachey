@@ -1,19 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api/index.js';
 import { Avatar, Spinner, Wordmark } from '../components/ui.jsx';
-import { PeopleIcon, PlusIcon } from '../components/Icons.jsx';
+import { BellIcon, PeopleIcon, PlusIcon } from '../components/Icons.jsx';
 import { timeAgo } from '../lib/format.js';
 import { useRefreshOnFocus } from '../lib/hooks.js';
 
 export function Home({ me, go, onCompose, refreshKey }) {
   const [friends, setFriends] = useState(null);
   const [requests, setRequests] = useState(0);
+  const [unread, setUnread] = useState(0);
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
     try {
-      const [f, members] = await Promise.all([api.listFriends(), api.listMembers()]);
+      const [f, members, u] = await Promise.all([api.listFriends(), api.listMembers(), api.activityUnread().catch(() => 0)]);
       setFriends(f);
+      setUnread(u);
       setRequests(members.filter((m) => m.status === 'received').length);
       setError('');
     } catch (e) { setError(e.message); }
@@ -28,6 +30,11 @@ export function Home({ me, go, onCompose, refreshKey }) {
       <header className="topbar">
         <Wordmark />
         <div className="topbar-actions">
+          <button className="people-btn" onClick={() => go('/activity')}
+            aria-label={unread ? `Activity, ${unread} new` : 'Activity'}>
+            <BellIcon />
+            {unread > 0 && <span className="badge">{unread > 99 ? '99+' : unread}</span>}
+          </button>
           <button className="people-btn" onClick={() => go('/people')}
             aria-label={requests ? `People, ${requests} friend request${requests > 1 ? 's' : ''}` : 'People'}>
             <PeopleIcon />
@@ -70,14 +77,11 @@ export function Home({ me, go, onCompose, refreshKey }) {
                 <button className={`friend-row ${f.has_new ? 'is-new' : ''}`} onClick={() => go(`/u/${f.id}`)}>
                   <Avatar person={f} size={50} />
                   <span className="friend-main">
+                    <span className="friend-name">{f.display_name}</span>
                     <span className="friend-line">
-                      <span className="friend-name">{f.display_name}</span>
-                      <span className="leader" aria-hidden="true" />
-                      {f.last_post_at && <time dateTime={f.last_post_at}>{timeAgo(f.last_post_at)}</time>}
-                    </span>
-                    <span className="friend-preview">
                       {f.has_new && <span className="new-mark">New</span>}
-                      {f.last_post_preview ?? 'No posts yet'}
+                      <span className="friend-preview">{f.last_post_preview ?? 'No posts yet'}</span>
+                      {f.last_post_at && <time dateTime={f.last_post_at}>{timeAgo(f.last_post_at)}</time>}
                     </span>
                   </span>
                 </button>

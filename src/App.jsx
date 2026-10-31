@@ -9,6 +9,7 @@ import { Feed } from './screens/Feed.jsx';
 import { EditProfile } from './screens/EditProfile.jsx';
 import { Invites } from './screens/Invites.jsx';
 import { People } from './screens/People.jsx';
+import { Activity } from './screens/Activity.jsx';
 
 const readRoute = () => window.location.hash.replace(/^#/, '') || '/';
 
@@ -53,9 +54,13 @@ export function App() {
   } else {
     const compose = () => setComposer({});
     const edit = (post) => setComposer({ editing: post });
-    const m = route.match(/^\/u\/([^/]+)$/);
+    // /u/<person>, or /u/<person>/p/<post> to jump to a post (add /c to open its comments)
+    const m = route.match(/^\/u\/([^/]+)(?:\/p\/([^/]+)(\/c)?)?$/);
     if (m) {
-      screen = <Feed key={m[1]} userId={m[1]} me={me} go={go} onCompose={compose} onEdit={edit} refreshKey={refreshKey} />;
+      screen = <Feed key={m[1]} userId={m[1]} me={me} go={go} onCompose={compose} onEdit={edit} refreshKey={refreshKey}
+        focusPostId={m[2]} openComments={!!m[3]} />;
+    } else if (route === '/activity') {
+      screen = <Activity me={me} go={go} />;
     } else if (route === '/me/edit') {
       screen = <EditProfile me={me} go={go} onSaved={loadMe} />;
     } else if (route === '/people') {

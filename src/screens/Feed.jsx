@@ -6,7 +6,7 @@ import { PostCard } from '../components/PostCard.jsx';
 import { FriendButton } from '../components/FriendButton.jsx';
 import { useRefreshOnFocus } from '../lib/hooks.js';
 
-export function Feed({ userId, me, go, onCompose, onEdit, refreshKey }) {
+export function Feed({ userId, me, go, onCompose, onEdit, refreshKey, focusPostId, openComments }) {
   const isMe = userId === me.id;
   const [person, setPerson] = useState(isMe ? me : null);
   const [status, setStatus] = useState(isMe ? 'me' : null);
@@ -35,6 +35,18 @@ export function Feed({ userId, me, go, onCompose, onEdit, refreshKey }) {
   }, [userId, isMe, me]);
 
   useEffect(() => { window.scrollTo(0, 0); }, [userId]);
+
+  // Arriving from Activity: scroll to that post and give it a brief highlight.
+  const [focused, setFocused] = useState(null);
+  useEffect(() => {
+    if (!focusPostId || !posts?.length || focused === focusPostId) return;
+    const el = document.getElementById(`post-${focusPostId}`);
+    if (!el) return;
+    setFocused(focusPostId);
+    el.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    el.classList.add('focus');
+    setTimeout(() => el.classList.remove('focus'), 2200);
+  }, [focusPostId, posts, focused]);
   useEffect(() => { load(); }, [load, refreshKey]);
   useRefreshOnFocus(load);
 
@@ -121,6 +133,7 @@ export function Feed({ userId, me, go, onCompose, onEdit, refreshKey }) {
 
         {canSeePosts && posts && posts.map((p) => (
           <PostCard key={p.id + (p.edited_at ?? '')} post={p} me={me} author={person} onEdit={onEdit}
+            startWithComments={openComments && p.id === focusPostId}
             onDeleted={(id) => setPosts((list) => list.filter((x) => x.id !== id))} />
         ))}
 

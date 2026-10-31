@@ -6,9 +6,9 @@ import { agoLong, entryDate, fullDate, joinNames, linkParts, splitLinks } from '
 import { Comments } from './Comments.jsx';
 import { sharePost, shareText } from '../lib/share.js';
 
-export function PostCard({ post, me, author, onEdit, onDeleted, onChanged }) {
+export function PostCard({ post, me, author, onEdit, onDeleted, onChanged, startWithComments }) {
   const [p, setP] = useState(post);
-  const [showComments, setShowComments] = useState(false);
+  const [showComments, setShowComments] = useState(!!startWithComments);
   const [hearters, setHearters] = useState(null);
   const [pop, setPop] = useState(false);
   const mine = p.author_id === me.id;
@@ -53,7 +53,7 @@ export function PostCard({ post, me, author, onEdit, onDeleted, onChanged }) {
   const link = p.link_url && linkParts(p.link_url);
 
   return (
-    <article className="post glass">
+    <article className="post glass" id={`post-${p.id}`}>
       <div className="post-head">
         <time dateTime={p.created_at} title={fullDate(p.created_at)}>
           {entryDate(p.created_at)}{p.edited_at && <span className="edited"> · edited</span>}

@@ -45,8 +45,9 @@ fine). Claude can push the code into it for you.
    somewhere safe; you won’t need it day to day.
 2. Open **SQL Editor → New query**, paste all of `supabase/schema.sql`, and
    click **Run**. The results panel lists your first 30 invite codes.
-   Then do the same with `supabase/02_friends.sql` (friendships) and
-   `supabase/03_comment_hearts.sql` (hearts on comments), in that order.
+   Then do the same with `supabase/02_friends.sql` (friendships),
+   `supabase/03_comment_hearts.sql` (hearts on comments) and
+   `supabase/04_activity.sql` (the Activity screen), in that order.
 3. In **Project Settings → API**, copy the **Project URL** and the
    **anon / public** key. Never share the `service_role` key.
 
@@ -127,3 +128,4 @@ Code layout:
 - `supabase/schema.sql` — tables, security rules, storage, invite codes
 - `supabase/02_friends.sql` — friendships and friends-only visibility (run after schema.sql)
 - `supabase/03_comment_hearts.sql` — hearts on comments (run after 02_friends.sql)
+- `supabase/04_activity.sql` — the Activity screen (run after 03_comment_hearts.sql)

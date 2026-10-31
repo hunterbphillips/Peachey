@@ -1,3 +1,4 @@
+import { groupActivity } from '../lib/activity.js';
 import { createClient } from '@supabase/supabase-js';
 import { compressImage } from '../lib/image.js';
 
@@ -97,6 +98,24 @@ export function makeSupabaseApi(url, anonKey) {
         patch.avatar_path = await upload('avatar', blob);
       }
       check(await sb.from('profiles').update(patch).eq('id', me));
+    },
+
+    // ---- activity
+    async listActivity() {
+      const rows = check(await sb.rpc('my_activity'));
+      return withUrls(rows, [['actor_avatar_path', 'actor_avatar_url']]);
+    },
+    async activityUnread() {
+      // Counted the way the Activity screen shows it: hearts on one post are one line.
+      const me = await uid();
+      const [rows, prof] = await Promise.all([
+        sb.rpc('my_activity').then(check),
+        sb.from('profiles').select('activity_seen_at').eq('id', me).single().then(check),
+      ]);
+      return groupActivity(rows.filter((r) => r.created_at > prof.activity_seen_at)).length;
+    },
+    async markActivitySeen() {
+      return check(await sb.rpc('mark_activity_seen'));
     },
 
     // ---- members & friendships

@@ -247,19 +247,23 @@ h1, h2 { text-wrap: balance; }
 }
 .friend-row:hover { background: var(--sky-hi); }
 .friend-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.friend-line { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
 .friend-name {
   font-family: var(--display); font-size: 20px; line-height: 1.25;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
 }
-.leader {
-  flex: 1; min-width: 16px;
-  border-bottom: 2px dotted color-mix(in srgb, var(--ink-faint) 55%, transparent);
-  transform: translateY(-5px);
+/* second line: [new dot] preview… (about two-thirds of the line) ........ time */
+.friend-line { display: flex; align-items: center; min-width: 0; }
+.friend-preview {
+  flex: 0 1 auto; min-width: 0; max-width: 66%;
+  color: var(--ink-soft); font-size: 15.5px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.friend-line time { flex: none; font-size: 14.5px; font-weight: 500; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.friend-line time {
+  flex: none; margin-left: auto; padding-left: 12px;
+  font-size: 14.5px; font-weight: 500; color: var(--ink-faint); font-variant-numeric: tabular-nums;
+}
 .friend-row.is-new .friend-line time { color: var(--blueberry-text); font-weight: 700; }
-.friend-preview { color: var(--ink-soft); font-size: 15.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.friend-row.is-new .friend-name { font-weight: 400; }
 /* "new": a lime dot (the word stays for screen readers) */
 .new-mark {
   display: inline-block;
@@ -549,6 +553,7 @@ h1, h2 { text-wrap: balance; }
 .person-row:hover { background: var(--sky-hi); }
 .person-main { flex: 1; min-width: 0; display: flex; align-items: center; gap: 16px; padding: 10px; text-align: left; }
 .person-main .friend-name { font-size: 19px; }
+.person-main .friend-main > .friend-preview { max-width: 100%; }
 .friend-actions { display: inline-flex; align-items: center; gap: 12px; flex: none; }
 .friend-actions .text-btn.inline { margin: 0; }
 .friend-state { display: inline-flex; align-items: center; gap: 5px; flex: none; font-weight: 700; font-size: 14.5px; color: var(--bondi-text); }
@@ -580,3 +585,29 @@ h1, h2 { text-wrap: balance; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 .post-ago { font-size: 14px; color: var(--ink-faint); padding-left: 6px; white-space: nowrap; }
+
+/* ---------- activity ---------- */
+.activity-list { list-style: none; margin: 0 -10px; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.activity-item { border-radius: var(--r); }
+.activity-main { width: 100%; display: flex; align-items: flex-start; gap: 14px; padding: 10px; text-align: left; border-radius: var(--r); }
+.activity-main:hover { background: var(--sky-hi); }
+.activity-avatar { position: relative; flex: none; }
+.activity-kind {
+  position: absolute; right: -4px; bottom: -4px;
+  width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 12px; line-height: 1;
+  color: var(--on-deep); background: var(--strawberry);
+  border: 2px solid var(--line);
+}
+.activity-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.activity-line { font-size: 16px; line-height: 1.35; }
+.activity-line strong { font-family: var(--display); font-weight: 400; font-size: 17px; }
+.activity-line .new-mark { vertical-align: 1px; }
+.activity-snippet { color: var(--ink-soft); font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.activity-text time { color: var(--ink-faint); font-size: 13.5px; }
+.activity-actions { display: flex; justify-content: flex-end; padding: 0 10px 10px 68px; }
+
+/* a post you arrived at from Activity glows briefly */
+.post { transition: background-color .6s ease, box-shadow .6s ease; border-radius: var(--r); scroll-margin-top: 72px; }
+.post.focus { background-color: color-mix(in srgb, var(--sunflower) 35%, transparent); box-shadow: 0 0 0 10px color-mix(in srgb, var(--sunflower) 35%, transparent); }

@@ -75,3 +75,19 @@ export function entryDate(iso) {
   if (d.getFullYear() !== now.getFullYear()) opts.year = 'numeric';
   return d.toLocaleDateString(undefined, opts);
 }
+
+// "just now", "5 minutes ago", "3 hours ago", "2 days ago", "3 weeks ago"…
+export function agoLong(iso) {
+  const secs = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+  const unit = (n, word) => `${n} ${word}${n === 1 ? '' : 's'} ago`;
+  if (secs < 60) return 'just now';
+  const mins = Math.floor(secs / 60);
+  if (mins < 60) return unit(mins, 'minute');
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return unit(hrs, 'hour');
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return unit(days, 'day');
+  if (days < 31) return unit(Math.floor(days / 7), 'week');
+  if (days < 365) return unit(Math.floor(days / 30), 'month');
+  return unit(Math.floor(days / 365), 'year');
+}

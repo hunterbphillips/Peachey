@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { api } from '../api/index.js';
 import { ConfirmBar, Menu } from './ui.jsx';
 import { CommentIcon, HeartIcon, LinkIcon, MoreIcon, ShareIcon } from './Icons.jsx';
-import { entryDate, fullDate, joinNames, linkParts, splitLinks } from '../lib/format.js';
+import { agoLong, entryDate, fullDate, joinNames, linkParts, splitLinks } from '../lib/format.js';
 import { Comments } from './Comments.jsx';
 import { sharePost, shareText } from '../lib/share.js';
 
@@ -110,6 +110,7 @@ export function PostCard({ post, me, author, onEdit, onDeleted, onChanged }) {
           aria-expanded={showComments} aria-label={`${p.comment_count} comments`}>
           <CommentIcon /><span>{p.comment_count}</span>
         </button>
+        <time className="post-ago" dateTime={p.created_at} title={fullDate(p.created_at)}>{agoLong(p.created_at)}</time>
         <button className={`act share ${shareFallback ? 'on-share' : ''}`} onClick={share}
           aria-label="Share this post" aria-expanded={shareFallback}>
           <ShareIcon /><span>Share</span>

@@ -1,0 +1,14 @@
+<!--
+  Paste this into BOTH of these Supabase templates
+  (Authentication → Emails → Templates):
+    • "Magic Link"      (subject: Your Peachey sign-in code)
+    • "Confirm signup"  (subject: Your Peachey sign-in code)
+  The 6-digit code is what people type into the app. The link is a backup.
+-->
+<div style="font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; max-width: 420px; margin: 0 auto; padding: 24px; color: #1D3344;">
+  <p style="font-size: 18px; font-weight: 800; margin: 0 0 16px;">🍑 Peachey</p>
+  <p style="margin: 0 0 12px;">Here’s your sign-in code:</p>
+  <p style="font-size: 32px; font-weight: 800; letter-spacing: 6px; margin: 0 0 20px;">{{ .Token }}</p>
+  <p style="margin: 0 0 20px; color: #4F6676;">Type it into Peachey. It works for one hour.</p>
+  <p style="margin: 0; font-size: 13px; color: #7F93A1;">Or <a href="{{ .ConfirmationURL }}" style="color: #0E7A8B;">tap here to sign in</a> on this device. If you didn’t ask for this, you can ignore it.</p>
+</div>

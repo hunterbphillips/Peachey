@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#BFE6F6"/>
+      <stop offset="1" stop-color="#F2FAFE"/>
+    </linearGradient>
+    <radialGradient id="peach" cx="0.38" cy="0.32" r="0.75">
+      <stop offset="0" stop-color="#FFD9C4"/>
+      <stop offset="0.55" stop-color="#FFA07E"/>
+      <stop offset="1" stop-color="#F2734E"/>
+    </radialGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8EE3B0"/>
+      <stop offset="1" stop-color="#2FB57A"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#sky)"/>
+  <path d="M262 132c18-40 62-58 104-50-12 42-52 70-104 50z" fill="url(#leaf)"/>
+  <circle cx="256" cy="286" r="150" fill="url(#peach)"/>
+  <ellipse cx="236" cy="208" rx="98" ry="56" fill="url(#gloss)"/>
+</svg>

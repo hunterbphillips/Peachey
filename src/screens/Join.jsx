@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { api } from '../api/index.js';
-import { ErrorNote, Orb } from '../components/ui.jsx';
+import { ErrorNote, PeachMark } from '../components/ui.jsx';
 
 export function Join({ onJoined }) {
   const [code, setCode] = useState('');
@@ -23,7 +23,7 @@ export function Join({ onJoined }) {
   return (
     <main className="welcome">
       <div className="welcome-hero">
-        <Orb size={72} />
+        <PeachMark size={64} />
         <h1>Welcome in</h1>
         <p>Enter the invite code a friend gave you.</p>
       </div>

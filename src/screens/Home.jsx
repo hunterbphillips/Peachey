@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api/index.js';
 import { Avatar, Spinner, Wordmark } from '../components/ui.jsx';
-import { PeopleIcon, PlusIcon } from '../components/Icons.jsx';
+import { PenIcon, PeopleIcon } from '../components/Icons.jsx';
 import { timeAgo } from '../lib/format.js';
 import { useRefreshOnFocus } from '../lib/hooks.js';
 
@@ -50,7 +50,7 @@ export function Home({ me, go, onCompose, refreshKey }) {
 
         {requests > 0 && (
           <button className="glass panel request-nudge" onClick={() => go('/people')}>
-            <span className="droplet" aria-hidden="true" />
+            <span className="new-mark" aria-hidden="true">New</span>
             {requests === 1 ? '1 friend request is waiting' : `${requests} friend requests are waiting`}
           </button>
         )}
@@ -67,15 +67,18 @@ export function Home({ me, go, onCompose, refreshKey }) {
           <ul className="glass panel friend-list">
             {friends.map((f) => (
               <li key={f.id}>
-                <button className="friend-row" onClick={() => go(`/u/${f.id}`)}>
+                <button className={`friend-row ${f.has_new ? 'is-new' : ''}`} onClick={() => go(`/u/${f.id}`)}>
                   <Avatar person={f} size={50} />
                   <span className="friend-main">
-                    <span className="friend-name">{f.display_name}</span>
-                    <span className="friend-preview">{f.last_post_preview ?? 'No posts yet'}</span>
-                  </span>
-                  <span className="friend-meta">
-                    {f.last_post_at && <time dateTime={f.last_post_at}>{timeAgo(f.last_post_at)}</time>}
-                    {f.has_new && <span className="droplet" aria-label="New posts" />}
+                    <span className="friend-line">
+                      <span className="friend-name">{f.display_name}</span>
+                      <span className="leader" aria-hidden="true" />
+                      {f.last_post_at && <time dateTime={f.last_post_at}>{timeAgo(f.last_post_at)}</time>}
+                    </span>
+                    <span className="friend-preview">
+                      {f.has_new && <span className="new-mark">New</span>}
+                      {f.last_post_preview ?? 'No posts yet'}
+                    </span>
                   </span>
                 </button>
               </li>
@@ -84,7 +87,7 @@ export function Home({ me, go, onCompose, refreshKey }) {
         )}
       </main>
 
-      <button className="fab" onClick={onCompose} aria-label="New post"><PlusIcon width={28} height={28} /></button>
+      <button className="fab" onClick={onCompose}><PenIcon /><span>Write</span></button>
     </>
   );
 }

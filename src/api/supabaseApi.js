@@ -171,7 +171,30 @@ export function makeSupabaseApi(url, anonKey) {
         .select('*, author:profiles!comments_author_id_fkey(id, display_name, avatar_path)')
         .eq('post_id', postId).order('created_at'));
       const get = await resolvePaths(rows.map((r) => r.author?.avatar_path));
-      return rows.map((r) => ({ ...r, author: r.author && { ...r.author, avatar_url: get(r.author.avatar_path) } }));
+      const me = await uid();
+      const hearts = rows.length ? check(await sb.from('comment_hearts')
+        .select('comment_id, user_id, user:profiles!comment_hearts_user_id_fkey(display_name)')
+        .in('comment_id', rows.map((r) => r.id))
+        .order('created_at')) : [];
+      return rows.map((r) => {
+        const mine = hearts.filter((h) => h.comment_id === r.id);
+        return {
+          ...r,
+          author: r.author && { ...r.author, avatar_url: get(r.author.avatar_path) },
+          heart_count: mine.length,
+          hearted_by_me: mine.some((h) => h.user_id === me),
+          hearted_by: mine.map((h) => (h.user_id === me ? 'you' : h.user?.display_name ?? 'someone')),
+        };
+      });
+    },
+    async setCommentHeart(commentId, on) {
+      const me = await uid();
+      if (on) {
+        const { error } = await sb.from('comment_hearts').insert({ comment_id: commentId, user_id: me });
+        if (error && error.code !== '23505') throw new Error(error.message);
+      } else {
+        check(await sb.from('comment_hearts').delete().eq('comment_id', commentId).eq('user_id', me));
+      }
     },
     async addComment(postId, body) {
       const me = await uid();

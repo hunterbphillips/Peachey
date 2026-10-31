@@ -53,3 +53,25 @@ export function splitLinks(text) {
   if (last < text.length) out.push({ text: text.slice(last) });
   return out;
 }
+
+export function joinNames(names) {
+  if (names.length <= 2) return names.join(' and ');
+  return `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
+}
+
+// A journal-style date for posts: "Today, 2:14 pm", "Yesterday, 9:02 am",
+// "Wednesday, 8:00 pm" this week, otherwise "Thursday, October 22".
+export function entryDate(iso) {
+  const d = new Date(iso);
+  const now = new Date();
+  const startOf = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate());
+  const days = Math.round((startOf(now) - startOf(d)) / 86_400_000);
+  const time = d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }).toLowerCase().replace(/\s/g, ' ');
+  if ((now - d) < 60_000) return 'Just now';
+  if (days === 0) return `Today, ${time}`;
+  if (days === 1) return `Yesterday, ${time}`;
+  if (days < 7) return `${d.toLocaleDateString(undefined, { weekday: 'long' })}, ${time}`;
+  const opts = { weekday: 'long', month: 'long', day: 'numeric' };
+  if (d.getFullYear() !== now.getFullYear()) opts.year = 'numeric';
+  return d.toLocaleDateString(undefined, opts);
+}

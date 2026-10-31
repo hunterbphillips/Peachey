@@ -45,7 +45,8 @@ fine). Claude can push the code into it for you.
    somewhere safe; you won’t need it day to day.
 2. Open **SQL Editor → New query**, paste all of `supabase/schema.sql`, and
    click **Run**. The results panel lists your first 30 invite codes.
-   Then do the same with `supabase/02_friends.sql`, which adds friendships.
+   Then do the same with `supabase/02_friends.sql` (friendships) and
+   `supabase/03_comment_hearts.sql` (hearts on comments), in that order.
 3. In **Project Settings → API**, copy the **Project URL** and the
    **anon / public** key. Never share the `service_role` key.
 
@@ -125,3 +126,4 @@ Code layout:
 - `src/api/demoApi.js` — the in-memory demo
 - `supabase/schema.sql` — tables, security rules, storage, invite codes
 - `supabase/02_friends.sql` — friendships and friends-only visibility (run after schema.sql)
+- `supabase/03_comment_hearts.sql` — hearts on comments (run after 02_friends.sql)

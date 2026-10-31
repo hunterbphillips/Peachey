@@ -23,7 +23,14 @@ export const CloseIcon = (p) => <svg {...base} {...p}><path d="M6 6l12 12M18 6L6
 export const CopyIcon = (p) => (
   <svg {...base} {...p}><rect x="8.5" y="8.5" width="11" height="11" rx="2.5" /><path d="M15.5 8.5V6.5a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2" /></svg>
 );
-export const PeopleIcon = (p) => (
+export const PenIcon = (p) => (
+  <svg {...base} {...p} strokeWidth={1.7}>
+    <path d="M14.5 5.5l4 4L9 19l-5 1 1-5z" />
+    <path d="M12.5 7.5l4 4" />
+    <path d="M5 15l4 4" />
+  </svg>
+);
+export const PeopleIcon =(p) => (
   <svg {...base} {...p}><circle cx="9" cy="8.5" r="3.2" /><path d="M3.5 19c.6-3.3 2.8-5 5.5-5s4.9 1.7 5.5 5" /><circle cx="16.5" cy="9.5" r="2.6" /><path d="M16 14.2c2.4.1 4 1.6 4.5 4.3" /></svg>
 );
 export const CheckIcon =(p) => <svg {...base} {...p}><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>;

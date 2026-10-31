@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { api } from '../api/index.js';
-import { ErrorNote, Orb } from '../components/ui.jsx';
+import { ErrorNote, PeachMark } from '../components/ui.jsx';
 
 // Email → 6-digit code. Typing the code (rather than tapping the link)
 // matters on iPhone: a link opens Safari, not the home-screen app.
@@ -36,7 +36,7 @@ export function SignIn() {
   return (
     <main className="welcome">
       <div className="welcome-hero">
-        <Orb size={96} />
+        <PeachMark size={88} />
         <h1>Peachey</h1>
         <p>A private little place for friends.</p>
       </div>

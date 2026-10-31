@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { api } from '../api/index.js';
 import { ConfirmBar, Menu } from './ui.jsx';
 import { CommentIcon, HeartIcon, LinkIcon, MoreIcon } from './Icons.jsx';
-import { fullDate, linkParts, splitLinks, timeAgo } from '../lib/format.js';
+import { entryDate, fullDate, joinNames, linkParts, splitLinks } from '../lib/format.js';
 import { Comments } from './Comments.jsx';
 
 export function PostCard({ post, me, onEdit, onDeleted, onChanged }) {
@@ -38,7 +38,7 @@ export function PostCard({ post, me, onEdit, onDeleted, onChanged }) {
     <article className="post glass">
       <div className="post-head">
         <time dateTime={p.created_at} title={fullDate(p.created_at)}>
-          {timeAgo(p.created_at)}{p.edited_at && <span className="edited"> · edited</span>}
+          {entryDate(p.created_at)}{p.edited_at && <span className="edited"> · edited</span>}
         </time>
         {mine && (
           <Menu label="Post options" trigger={<MoreIcon />} items={[
@@ -104,9 +104,4 @@ export function PostCard({ post, me, onEdit, onDeleted, onChanged }) {
       )}
     </article>
   );
-}
-
-function joinNames(names) {
-  if (names.length <= 2) return names.join(' and ');
-  return `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
 }

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api/index.js';
 import { Avatar, ConfirmBar, Menu, Spinner } from '../components/ui.jsx';
-import { BackIcon, MoreIcon, PlusIcon } from '../components/Icons.jsx';
+import { BackIcon, MoreIcon, PenIcon } from '../components/Icons.jsx';
 import { PostCard } from '../components/PostCard.jsx';
 import { FriendButton } from '../components/FriendButton.jsx';
 import { useRefreshOnFocus } from '../lib/hooks.js';
@@ -131,7 +131,7 @@ export function Feed({ userId, me, go, onCompose, onEdit, refreshKey }) {
         )}
       </main>
 
-      {isMe && <button className="fab" onClick={onCompose} aria-label="New post"><PlusIcon width={28} height={28} /></button>}
+      {isMe && <button className="fab" onClick={onCompose}><PenIcon /><span>Write</span></button>}
     </>
   );
 }

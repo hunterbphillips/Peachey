@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api/index.js';
 import { Avatar, ConfirmBar, Menu, Spinner } from './ui.jsx';
-import { MoreIcon, SendIcon } from './Icons.jsx';
-import { fullDate, splitLinks, timeAgo } from '../lib/format.js';
+import { HeartIcon, MoreIcon, SendIcon } from './Icons.jsx';
+import { fullDate, joinNames, splitLinks, timeAgo } from '../lib/format.js';
 
 export function Comments({ postId, me, onCountChange }) {
   const [list, setList] = useState(null);
@@ -38,6 +38,18 @@ export function Comments({ postId, me, onCountChange }) {
   }
 
   const [confirmId, setConfirmId] = useState(null);
+  const [showHearts, setShowHearts] = useState(null);
+
+  async function toggleHeart(c) {
+    const on = !c.hearted_by_me;
+    const patch = (fn) => setList((l) => l.map((x) => (x.id === c.id ? fn(x) : x)));
+    patch((x) => ({
+      ...x, hearted_by_me: on, heart_count: x.heart_count + (on ? 1 : -1),
+      hearted_by: on ? [...x.hearted_by, 'you'] : x.hearted_by.filter((n) => n !== 'you'),
+    }));
+    try { await api.setCommentHeart(c.id, on); }
+    catch { patch(() => c); }
+  }
   async function remove(id) {
     await api.deleteComment(id);
     setConfirmId(null);
@@ -70,6 +82,21 @@ export function Comments({ postId, me, onCountChange }) {
                     ? <a key={i} href={part.href} target="_blank" rel="noopener noreferrer">{part.text}</a>
                     : <span key={i}>{part.text}</span>)}</p>
                 )}
+                <div className="comment-actions">
+                  <button className={`act small heart ${c.hearted_by_me ? 'on' : ''}`} onClick={() => toggleHeart(c)}
+                    aria-pressed={c.hearted_by_me} aria-label={c.hearted_by_me ? 'Remove heart from comment' : 'Heart comment'}>
+                    <HeartIcon filled={c.hearted_by_me} width={16} height={16} />
+                  </button>
+                  {c.heart_count > 0 && (
+                    <button className="act-count small" onClick={() => setShowHearts(showHearts === c.id ? null : c.id)}
+                      aria-expanded={showHearts === c.id} aria-label={`${c.heart_count} hearts, show who`}>
+                      {c.heart_count}
+                    </button>
+                  )}
+                  {showHearts === c.id && c.heart_count > 0 && (
+                    <span className="hearters inline">Hearted by {joinNames(c.hearted_by)}</span>
+                  )}
+                </div>
               </div>
               {c.author_id === me.id && editing?.id !== c.id && (
                 <Menu label="Comment options" trigger={<MoreIcon width={18} height={18} />} items={[

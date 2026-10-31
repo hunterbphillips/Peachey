@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { CloseIcon } from './Icons.jsx';
 
-// Soft pastel tints for people without a profile photo.
-const TINTS = [
-  ['#FFD3BF', '#B4532F'], ['#CDEFF5', '#1C7C8C'], ['#DDF3D3', '#3A7D3A'],
-  ['#E5DEFA', '#5C4BA6'], ['#FFE6B0', '#8A5A00'], ['#FAD6E4', '#A23767'],
-];
+// Muted bookcloth colours for people without a profile photo.
+// Each is a CSS token pair (see styles.css) so they work in light and dark.
+const TINTS = ['clay', 'sage', 'ink-blue', 'plum', 'ochre', 'rose'];
 function tintFor(id = '') {
   let h = 0;
   for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
@@ -15,33 +13,45 @@ const initials = (name = '') =>
   name.trim().split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join('') || '?';
 
 export function Avatar({ person, size = 44 }) {
-  const [bg, fg] = tintFor(person?.id);
-  const style = { width: size, height: size, fontSize: size * 0.38 };
+  const style = { width: size, height: size, fontSize: size * 0.42 };
   if (person?.avatar_url) {
     return <img className="avatar" style={style} src={person.avatar_url} alt="" />;
   }
   return (
-    <span className="avatar avatar-initials" style={{ ...style, background: bg, color: fg }} aria-hidden="true">
+    <span className={`avatar avatar-initials tint-${tintFor(person?.id)}`} style={style} aria-hidden="true">
       {initials(person?.display_name)}
     </span>
   );
 }
 
-export function Orb({ size = 28 }) {
-  return <span className="orb" style={{ width: size, height: size }} aria-hidden="true" />;
+// Peachey's mark: an engraving-style peach with a leaf.
+export function PeachMark({ size = 28 }) {
+  return (
+    <svg className="peach-mark" width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M16 9.5c-1-2.2-1.4-4-1-5.6" fill="none" stroke="var(--ink)" strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M16.2 8.6c1.2-3.4 4.6-5.2 9-4.6-1.3 3.9-5 5.7-9 4.6z" fill="var(--sage)" stroke="var(--ink)" strokeWidth="1.2" strokeLinejoin="round" />
+      <path d="M17.8 7.4c1.8-.9 3.6-1.6 5.6-2" fill="none" stroke="var(--ink)" strokeWidth=".8" strokeLinecap="round" />
+      <path d="M16 9.6c-6.3-1.4-11 3.2-11 9.3C5 25.1 9.8 29 16 29s11-3.9 11-10.1c0-6.1-4.7-10.7-11-9.3z" fill="var(--clay)" stroke="var(--ink)" strokeWidth="1.4" strokeLinejoin="round" />
+      <path d="M16 10.2c-2.4 4.6-2.6 11.6 0 18.2" fill="none" stroke="var(--ink)" strokeWidth="1.1" strokeLinecap="round" />
+      <g stroke="var(--ink)" strokeWidth=".8" strokeLinecap="round" opacity=".55">
+        <path d="M22.4 25.6l2.4-2.4" /><path d="M20.6 26.9l3.6-3.6" /><path d="M23.6 21.9l1.8-1.8" /><path d="M24.6 18.6l1.2-1.2" />
+      </g>
+      <path d="M9.2 14.6c.8-1.3 2-2.2 3.4-2.6" fill="none" stroke="var(--paper-hi)" strokeWidth="1.4" strokeLinecap="round" opacity=".8" />
+    </svg>
+  );
 }
 
 export function Wordmark() {
   return (
     <span className="wordmark">
-      <Orb size={26} />
+      <PeachMark size={30} />
       <span>Peachey</span>
     </span>
   );
 }
 
 export function Spinner({ label = 'Loading' }) {
-  return <div className="spinner" role="status" aria-label={label}><span /></div>;
+  return <div className="spinner" role="status" aria-label={label}><span /><span /><span /></div>;
 }
 
 export function Sheet({ title, onClose, children, footer }) {

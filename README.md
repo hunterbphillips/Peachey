@@ -1,4 +1,4 @@
-# Peachey
+# Peaches
 
 A private little place for friends. Everyone has a profile with their own feed
 of text, photo and link posts that friends can heart and comment on. The home
@@ -63,7 +63,7 @@ messages an hour. To email friends:
 4. In Supabase, open the Auth email settings and turn on **custom SMTP**:
    - Host `smtp.resend.com`, port `465`, username `resend`
    - Password: your Resend API key
-   - Sender: something like `peachey@yourdomain.com`, name `Peachey`
+   - Sender: something like `peachey@yourdomain.com`, name `Peaches`
 5. In the Supabase email templates, replace both **Magic Link** and
    **Confirm signup** with `supabase/email-template.html`. This puts a
    6-digit code in the email. People type the code into the app instead of
@@ -71,7 +71,7 @@ messages an hour. To email friends:
    home-screen app and they’d end up signed in in the wrong place.
 
 ### 4. Vercel
-1. Sign up with your GitHub account and **Import** the `Peachey` repository.
+1. Sign up with your GitHub account and **Import** the `Peaches` repository.
    Vercel detects Vite automatically.
 2. Click **Deploy**. No settings are needed: the Supabase address and public
    key are in `.env.production`. (Both are safe to publish; the database's

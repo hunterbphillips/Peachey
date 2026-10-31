@@ -1,5 +1,5 @@
 /* =====================================================================
-   Peachey: pastel fruit on a soft sky.
+   Peaches: pastel fruit on a soft sky.
    A blush-to-lavender-to-baby-blue page, pastel fruit colours (peach,
    blush, lavender, mint, butter, periwinkle) and deep plum ink. Mac OS 9
    Platinum shows up where something floats (the writing window, menus,
@@ -43,7 +43,9 @@
   --sheen: rgba(255, 255, 255, .45);   /* the faint lighter top edge */
   --hairline: rgba(47, 37, 80, .09);  /* very thin dividers */
 
-  /* tokens the peach mark uses */
+  /* tokens the peach mark uses: rosy pink with a hint of peach */
+  --peach-front: #FF97B0;
+  --peach-back: #FFBFCB;
   --clay: #FFA486;
   --sage: #9FDB8F;
   --paper-hi: #FFFFFF;
@@ -131,7 +133,7 @@ h1, h2 { text-wrap: balance; }
 
 /* ---------- mark & type ---------- */
 .peach-mark { display: block; flex: none; }
-.wordmark { display: inline-flex; align-items: center; gap: 9px; font-family: var(--display); font-size: 27px; line-height: 1; }
+.wordmark { display: inline-flex; align-items: center; gap: 6px; font-family: var(--display); font-size: 27px; line-height: 1; }
 .home-intro { padding: 12px 0 0; display: flex; flex-direction: column; gap: 4px; }
 .home-intro h1 { font-family: var(--display); font-weight: 400; font-size: 40px; line-height: 1.05; }
 .home-intro p { color: var(--ink-soft); }

@@ -1,9 +1,9 @@
 -- =====================================================================
--- Peachey update 5: "last seen" on friends' profiles.
+-- Peaches update 5: "last seen" on friends' profiles.
 -- Paste this whole file into Supabase → SQL Editor → New query → Run.
 -- Run it once, after 04_activity.sql.
 --
--- The app notes when each person last had Peachey open. Only that
+-- The app notes when each person last had Peaches open. Only that
 -- person and their friends can read it, and anyone can switch it off in
 -- Edit profile ("Show when I was last on").
 -- =====================================================================

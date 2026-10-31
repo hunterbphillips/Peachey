@@ -27,7 +27,7 @@ function describe(item, me) {
     case 'thread_comment': return <>{who} also commented on {whose} post</>;
     case 'friend_request': return <>{who} wants to be friends</>;
     case 'friend_accepted': return <>{who} accepted your friend request</>;
-    case 'joined': return <>{who} joined Peachey with your invite</>;
+    case 'joined': return <>{who} joined Peaches with your invite</>;
     default: return who;
   }
 }

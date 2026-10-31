@@ -15,7 +15,7 @@ export function Invites({ me, go }) {
 
   const [manual, setManual] = useState(null); // invite text to copy by hand if the clipboard is blocked
   const inviteText = (code) =>
-    `You’re invited to Peachey! Sign in at ${window.location.origin} and use this invite code: ${code}`;
+    `You’re invited to Peaches! Sign in at ${window.location.origin} and use this invite code: ${code}`;
 
   function copy(code) {
     const text = inviteText(code);

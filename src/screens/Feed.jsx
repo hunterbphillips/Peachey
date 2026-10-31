@@ -41,7 +41,7 @@ export function Feed({ userId, me, go, onCompose, onEdit, refreshKey, focusPostI
         isMe ? me : api.getProfile(userId),
         isMe ? 'me' : api.friendshipStatus(userId),
       ]);
-      if (!prof) { setError('This person isn’t on Peachey.'); return; }
+      if (!prof) { setError('This person isn’t on Peaches.'); return; }
       setPerson(prof); setStatus(rel); setError('');
       if (rel === 'friends') api.lastSeen(userId).then(setSeenAt).catch(() => {});
       if (rel === 'me' || rel === 'friends') {

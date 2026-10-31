@@ -131,7 +131,7 @@ export function PostCard({ post, me, author, onEdit, onDeleted, onChanged, start
 
       {shareFallback && (
         <div className="share-fallback">
-          <p>Send a copy of this post{p.image_url ? ' and its photo' : ''} outside Peachey.</p>
+          <p>Send a copy of this post{p.image_url ? ' and its photo' : ''} outside Peaches.</p>
           <div className="share-options">
             {(p.body || p.link_url) && (
               <button className="pill-btn" onClick={copyText}>{copied ? 'Copied' : 'Copy text'}</button>

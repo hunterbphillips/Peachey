@@ -24,19 +24,24 @@ export function Avatar({ person, size = 44 }) {
   );
 }
 
-// Peachey's mark: an engraving-style peach with a leaf.
+// Peaches' mark: a pair of rosy peaches, one nestled behind the other.
+function Peach({ fill, transform }) {
+  return (
+    <g transform={transform}>
+      <path d="M16 9.5c-1-2.2-1.4-4-1-5.6" fill="none" stroke="var(--ink)" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M16.2 8.6c1.2-3.4 4.6-5.2 9-4.6-1.3 3.9-5 5.7-9 4.6z" fill="var(--sage)" stroke="var(--ink)" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M16 9.6c-6.3-1.4-11 3.2-11 9.3C5 25.1 9.8 29 16 29s11-3.9 11-10.1c0-6.1-4.7-10.7-11-9.3z" fill={fill} stroke="var(--ink)" strokeWidth="1.9" strokeLinejoin="round" />
+      <path d="M16 10.2c-2.4 4.6-2.6 11.6 0 18.2" fill="none" stroke="var(--ink)" strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M9.2 14.6c.8-1.3 2-2.2 3.4-2.6" fill="none" stroke="#FFFFFF" strokeWidth="1.9" strokeLinecap="round" opacity=".85" />
+    </g>
+  );
+}
+
 export function PeachMark({ size = 28 }) {
   return (
     <svg className="peach-mark" width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-      <path d="M16 9.5c-1-2.2-1.4-4-1-5.6" fill="none" stroke="var(--ink)" strokeWidth="1.4" strokeLinecap="round" />
-      <path d="M16.2 8.6c1.2-3.4 4.6-5.2 9-4.6-1.3 3.9-5 5.7-9 4.6z" fill="var(--sage)" stroke="var(--ink)" strokeWidth="1.2" strokeLinejoin="round" />
-      <path d="M17.8 7.4c1.8-.9 3.6-1.6 5.6-2" fill="none" stroke="var(--ink)" strokeWidth=".8" strokeLinecap="round" />
-      <path d="M16 9.6c-6.3-1.4-11 3.2-11 9.3C5 25.1 9.8 29 16 29s11-3.9 11-10.1c0-6.1-4.7-10.7-11-9.3z" fill="var(--clay)" stroke="var(--ink)" strokeWidth="1.4" strokeLinejoin="round" />
-      <path d="M16 10.2c-2.4 4.6-2.6 11.6 0 18.2" fill="none" stroke="var(--ink)" strokeWidth="1.1" strokeLinecap="round" />
-      <g stroke="var(--ink)" strokeWidth=".8" strokeLinecap="round" opacity=".55">
-        <path d="M22.4 25.6l2.4-2.4" /><path d="M20.6 26.9l3.6-3.6" /><path d="M23.6 21.9l1.8-1.8" /><path d="M24.6 18.6l1.2-1.2" />
-      </g>
-      <path d="M9.2 14.6c.8-1.3 2-2.2 3.4-2.6" fill="none" stroke="var(--paper-hi)" strokeWidth="1.4" strokeLinecap="round" opacity=".8" />
+      <Peach fill="var(--peach-back)" transform="translate(-1.2 0.6) scale(0.74)" />
+      <Peach fill="var(--peach-front)" transform="translate(8.6 7.2) scale(0.74)" />
     </svg>
   );
 }
@@ -44,8 +49,8 @@ export function PeachMark({ size = 28 }) {
 export function Wordmark() {
   return (
     <span className="wordmark">
-      <PeachMark size={30} />
-      <span>Peachey</span>
+      <PeachMark size={38} />
+      <span>Peaches</span>
     </span>
   );
 }

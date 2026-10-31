@@ -1,5 +1,5 @@
-// Sharing a post outward sends a copy (text, link, photo), not a Peachey
-// link: Peachey is private, so a link would only reach a sign-in screen.
+// Sharing a post outward sends a copy (text, link, photo), not a Peaches
+// link: Peaches is private, so a link would only reach a sign-in screen.
 
 export function shareText(post, authorName, isMine) {
   const parts = [];

@@ -41,7 +41,7 @@ export function Join({ onJoined }) {
           <input autoComplete="name" required maxLength={40} value={name} onChange={(e) => setName(e.target.value)} placeholder="First and last, or a nickname" />
         </label>
         <ErrorNote error={error} />
-        <button className="gel-btn wide" disabled={busy}>{busy ? 'Joining…' : 'Join Peachey'}</button>
+        <button className="gel-btn wide" disabled={busy}>{busy ? 'Joining…' : 'Join Peaches'}</button>
         <button type="button" className="text-btn" onClick={() => api.signOut()}>Sign out</button>
       </form>
     </main>

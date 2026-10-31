@@ -37,7 +37,7 @@ export function App() {
     loadMe();
   }, [userId, loadMe]);
 
-  // "I'm here": once on opening, then every two minutes while Peachey is on screen.
+  // "I'm here": once on opening, then every two minutes while Peaches is on screen.
   const memberId = me?.id;
   useEffect(() => {
     if (!memberId) return;

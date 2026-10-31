@@ -1,5 +1,5 @@
 -- =====================================================================
--- Peachey update 2: friends.
+-- Peaches update 2: friends.
 -- Paste this whole file into Supabase → SQL Editor → New query → Run.
 -- Run it once, after schema.sql. Your existing posts and codes are kept.
 --
@@ -153,7 +153,7 @@ language sql stable security definer set search_path = public as $$
   where public.is_member();
 $$;
 
--- Everyone on Peachey except me, with where I stand with each.
+-- Everyone on Peaches except me, with where I stand with each.
 -- Requests to me come first, then everyone else by name.
 create function public.members_list()
 returns table (id uuid, display_name text, bio text, avatar_path text, status text, requested_at timestamptz)
@@ -175,7 +175,7 @@ declare
 begin
   if not public.is_member() then raise exception 'Not a member'; end if;
   if other = auth.uid() then raise exception 'You can’t friend yourself'; end if;
-  if not exists (select 1 from profiles where id = other) then raise exception 'That person isn’t on Peachey'; end if;
+  if not exists (select 1 from profiles where id = other) then raise exception 'That person isn’t on Peaches'; end if;
   current := public.friendship_status(other);
   if current = 'received' then
     update friendships set status = 'accepted', accepted_at = now()

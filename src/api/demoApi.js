@@ -66,7 +66,7 @@ function initialData() {
     post('priya', 60 * 24 * 4, '', { image_url: scene('dusk') }),
     post('jonas', 60 * 24 * 9, 'Moved desks at work and now I can see a tree. Life is good.'),
     post('ruth', 60 * 8, 'Week two in the new place. Took a drive out to the red rocks today.', { image_url: scene('mesa') }),
-    post('me', 60 * 24 * 2, 'Welcome to Peachey, everyone! Post whatever you like. No algorithm, no ads, just us.', { image_url: scene('dawn') }),
+    post('me', 60 * 24 * 2, 'Welcome to Peaches, everyone! Post whatever you like. No algorithm, no ads, just us.', { image_url: scene('dawn') }),
     // a longer history for Maya, to show scrolling up into older posts
     ...[
       'Planted garlic for next summer. See you in July, little guys.',

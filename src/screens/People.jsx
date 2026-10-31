@@ -44,7 +44,7 @@ export function People({ go, onRequestsChanged }) {
       <main className="page">
         <div className="home-intro">
           <h1>People</h1>
-          <p>Everyone on Peachey. Only your friends see your posts.</p>
+          <p>Everyone on Peaches. Only your friends see your posts.</p>
         </div>
         {error && <p className="error-note" role="alert">Couldn’t load people. {error}</p>}
         {!members && !error && <Spinner />}

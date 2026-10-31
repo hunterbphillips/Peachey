@@ -1,5 +1,5 @@
 -- =====================================================================
--- Peachey update 4: the Activity screen.
+-- Peaches update 4: the Activity screen.
 -- Paste this whole file into Supabase → SQL Editor → New query → Run.
 -- Run it once, after 03_comment_hearts.sql.
 --

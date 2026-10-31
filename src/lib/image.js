@@ -1,5 +1,5 @@
 // Shrinks photos on the phone before upload. A typical 4 MB phone photo
-// becomes ~250 KB, which is what keeps Peachey inside the free storage tier.
+// becomes ~250 KB, which is what keeps Peaches inside the free storage tier.
 
 async function loadBitmap(file) {
   if ('createImageBitmap' in window) {

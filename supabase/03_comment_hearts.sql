@@ -1,5 +1,5 @@
 -- =====================================================================
--- Peachey update 3: hearts on comments.
+-- Peaches update 3: hearts on comments.
 -- Paste this whole file into Supabase → SQL Editor → New query → Run.
 -- Run it once, after 02_friends.sql.
 --

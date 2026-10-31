@@ -1,5 +1,5 @@
 -- =====================================================================
--- Peachey: database setup
+-- Peaches: database setup
 -- Paste this whole file into Supabase → SQL Editor → New query → Run.
 -- It is safe to run on a brand-new project. It creates the tables,
 -- the security rules, the photo bucket and your first 30 invite codes.
@@ -169,7 +169,7 @@ from public.posts p;
 -- Functions the app calls
 -- ---------------------------------------------------------------------
 
--- Join Peachey with an invite code. The very first person to join
+-- Join Peaches with an invite code. The very first person to join
 -- becomes the admin (that should be you, Hunter).
 create function public.redeem_invite(invite_code text, name text)
 returns public.profiles

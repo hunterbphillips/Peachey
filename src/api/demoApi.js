@@ -74,7 +74,7 @@ function initialData() {
   const comments = [
     { post_id: 'p1', author_id: 'theo', body: 'That is a tomato with ambition.', mins: 15 },
     { post_id: 'p1', author_id: 'priya', body: 'Caprese night at Maya’s?', mins: 9 },
-    { post_id: 'p2', author_id: 'ben', body: 'I will take six. Maybe seven.', mins: 60 * 25 },
+    { post_id: 'p2', author_id: 'jonas', body: 'I will take six. Maybe seven.', mins: 60 * 25 },
     { post_id: 'p4', author_id: 'ruth', body: 'Gorgeous. Take me next time!', mins: 60 * 2 },
     { post_id: 'p10', author_id: 'maya', body: 'Love this. Thanks for making it 🍑', mins: 60 * 40 },
   ].map((c, i) => ({ id: 'c' + i, post_id: c.post_id, author_id: c.author_id, body: c.body, created_at: ago(c.mins), edited_at: null }));
@@ -95,7 +95,10 @@ function initialData() {
     used_at: i < usedBy.length ? ago(60 * 24 * (20 - i)) : null,
     used_by_name: usedBy[i] ?? null,
   }));
-  return { me, people: [me, ...friends], posts, hearts, comments, views, invites, signedIn: true, member: true };
+  // Where "you" stand with each member. Ben has sent you a request;
+  // Jonas isn't a friend yet (his comment on Maya's post still shows).
+  const friendships = { maya: 'friends', theo: 'friends', priya: 'friends', ruth: 'friends', ben: 'received', jonas: 'none' };
+  return { me, people: [me, ...friends], posts, hearts, comments, views, invites, friendships, signedIn: true, member: true };
 }
 
 export function makeDemoApi() {
@@ -145,9 +148,29 @@ export function makeDemoApi() {
       if (avatarFile) db.me.avatar_url = URL.createObjectURL(avatarFile);
     },
 
+    async listMembers() {
+      await wait();
+      return db.people.filter((p) => p.id !== 'me')
+        .map((p) => ({ ...p, status: db.friendships[p.id] ?? 'none' }))
+        .sort((a, b) => ((b.status === 'received') - (a.status === 'received')) || a.display_name.localeCompare(b.display_name));
+    },
+    async friendshipStatus(id) { await wait(80); return id === 'me' ? 'me' : db.friendships[id] ?? 'none'; },
+    async sendFriendRequest(id) {
+      await wait(250);
+      const s = db.friendships[id] ?? 'none';
+      db.friendships[id] = s === 'received' ? 'friends' : s === 'none' ? 'sent' : s;
+      return db.friendships[id];
+    },
+    async respondFriendRequest(id, accept) {
+      await wait(250);
+      db.friendships[id] = accept ? 'friends' : 'none';
+      return db.friendships[id];
+    },
+    async removeFriend(id) { await wait(250); db.friendships[id] = 'none'; return 'none'; },
+
     async listFriends() {
       await wait();
-      return db.people.filter((p) => p.id !== 'me').map((p) => {
+      return db.people.filter((p) => db.friendships[p.id] === 'friends').map((p) => {
         const mine = db.posts.filter((x) => x.author_id === p.id).sort((a, b) => b.created_at.localeCompare(a.created_at));
         const last = mine[0];
         return {
@@ -163,6 +186,7 @@ export function makeDemoApi() {
 
     async listPosts(authorId) {
       await wait();
+      if (authorId !== 'me' && db.friendships[authorId] !== 'friends') return { posts: [], hasMore: false };
       const posts = db.posts.filter((p) => p.author_id === authorId)
         .sort((a, b) => b.created_at.localeCompare(a.created_at)).map(decorate);
       return { posts, hasMore: false };

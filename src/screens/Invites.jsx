@@ -44,7 +44,7 @@ export function Invites({ me, go }) {
       <main className="page">
         <div className="home-intro">
           <h1>Invite codes</h1>
-          <p>Each code works once. Copy one to send a ready-made invite message.</p>
+          <p>Each code works once, and whoever uses it becomes your friend automatically. Copy one to send a ready-made invite message.</p>
         </div>
         {error && <p className="error-note" role="alert">{error}</p>}
         {!codes && !error && <Spinner />}

@@ -1,17 +1,22 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api/index.js';
 import { Avatar, Spinner, Wordmark } from '../components/ui.jsx';
-import { PlusIcon } from '../components/Icons.jsx';
+import { PeopleIcon, PlusIcon } from '../components/Icons.jsx';
 import { timeAgo } from '../lib/format.js';
 import { useRefreshOnFocus } from '../lib/hooks.js';
 
 export function Home({ me, go, onCompose, refreshKey }) {
   const [friends, setFriends] = useState(null);
+  const [requests, setRequests] = useState(0);
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
-    try { setFriends(await api.listFriends()); setError(''); }
-    catch (e) { setError(e.message); }
+    try {
+      const [f, members] = await Promise.all([api.listFriends(), api.listMembers()]);
+      setFriends(f);
+      setRequests(members.filter((m) => m.status === 'received').length);
+      setError('');
+    } catch (e) { setError(e.message); }
   }, []);
   useEffect(() => { load(); }, [load, refreshKey]);
   useRefreshOnFocus(load);
@@ -22,9 +27,16 @@ export function Home({ me, go, onCompose, refreshKey }) {
     <>
       <header className="topbar">
         <Wordmark />
-        <button className="me-btn" onClick={() => go(`/u/${me.id}`)} aria-label="Your profile">
-          <Avatar person={me} size={38} />
-        </button>
+        <div className="topbar-actions">
+          <button className="people-btn" onClick={() => go('/people')}
+            aria-label={requests ? `People, ${requests} friend request${requests > 1 ? 's' : ''}` : 'People'}>
+            <PeopleIcon />
+            {requests > 0 && <span className="badge">{requests}</span>}
+          </button>
+          <button className="me-btn" onClick={() => go(`/u/${me.id}`)} aria-label="Your profile">
+            <Avatar person={me} size={38} />
+          </button>
+        </div>
       </header>
 
       <main className="page">
@@ -36,12 +48,18 @@ export function Home({ me, go, onCompose, refreshKey }) {
         {error && <p className="error-note" role="alert">Couldn’t load your friends. {error}</p>}
         {friends == null && !error && <Spinner />}
 
+        {requests > 0 && (
+          <button className="glass panel request-nudge" onClick={() => go('/people')}>
+            <span className="droplet" aria-hidden="true" />
+            {requests === 1 ? '1 friend request is waiting' : `${requests} friend requests are waiting`}
+          </button>
+        )}
+
         {friends && friends.length === 0 && (
           <div className="glass panel empty">
-            <p>No one else is here yet.</p>
-            {me.is_admin
-              ? <button className="gel-btn" onClick={() => go('/invites')}>Get invite codes</button>
-              : <p className="fine">Friends will show up here once they join.</p>}
+            <p>Your friends’ posts will show up here.</p>
+            <button className="gel-btn" onClick={() => go('/people')}>Find friends</button>
+            {me.is_admin && <button className="text-btn" onClick={() => go('/invites')}>Get invite codes</button>}
           </div>
         )}
 

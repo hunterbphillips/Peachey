@@ -2,8 +2,13 @@
 
 A private little place for friends. Everyone has a profile with their own feed
 of text, photo and link posts that friends can heart and comment on. The home
-screen is a list of friends, with a dot next to anyone who has posted since you
-last looked.
+screen is a list of your friends, with a dot next to anyone who has posted
+since you last looked.
+
+Everyone can see the member list (names, bios, profile photos) and send friend
+requests. Posts, and their photos, hearts and comments, are visible only to
+the author and their friends. Using an invite code makes you friends with
+whoever made it.
 
 - **App:** React + Vite, installable to a phone’s home screen (no app store).
 - **Backend:** Supabase (sign-in, database, photo storage).
@@ -40,6 +45,7 @@ fine). Claude can push the code into it for you.
    somewhere safe; you won’t need it day to day.
 2. Open **SQL Editor → New query**, paste all of `supabase/schema.sql`, and
    click **Run**. The results panel lists your first 30 invite codes.
+   Then do the same with `supabase/02_friends.sql`, which adds friendships.
 3. In **Project Settings → API**, copy the **Project URL** and the
    **anon / public** key. Never share the `service_role` key.
 
@@ -95,9 +101,9 @@ copy a ready-made invite message for each code or make 10 more.
 - **Changing a post’s photo:** editing covers text and links. To swap a photo,
   delete the post and post again.
 - **Privacy:** every table is locked so that only members can read anything,
-  and people can only change or delete their own posts, comments, hearts and
-  photos. Photos live in a private bucket and are shown through short-lived
-  links.
+  only friends can see each other’s posts, and people can only change or
+  delete their own posts, comments, hearts and photos. Photos live in a
+  private bucket and are shown through short-lived links.
 - **Removing someone:** in Supabase, open Authentication → Users and delete
   them. Their profile, posts and comments go with them.
 
@@ -113,8 +119,9 @@ npm run build:demo        # single-file demo in dist-demo/
 
 Code layout:
 
-- `src/screens/` — sign-in, invite code, friends list, feed, profile editing, invite codes
+- `src/screens/` — sign-in, invite code, friends list, people & requests, feed, profile editing, invite codes
 - `src/components/` — post card, comments, composer and shared pieces
 - `src/api/supabaseApi.js` — everything that talks to Supabase
 - `src/api/demoApi.js` — the in-memory demo
 - `supabase/schema.sql` — tables, security rules, storage, invite codes
+- `supabase/02_friends.sql` — friendships and friends-only visibility (run after schema.sql)

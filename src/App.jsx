@@ -8,6 +8,7 @@ import { Home } from './screens/Home.jsx';
 import { Feed } from './screens/Feed.jsx';
 import { EditProfile } from './screens/EditProfile.jsx';
 import { Invites } from './screens/Invites.jsx';
+import { People } from './screens/People.jsx';
 
 const readRoute = () => window.location.hash.replace(/^#/, '') || '/';
 
@@ -57,6 +58,8 @@ export function App() {
       screen = <Feed key={m[1]} userId={m[1]} me={me} go={go} onCompose={compose} onEdit={edit} refreshKey={refreshKey} />;
     } else if (route === '/me/edit') {
       screen = <EditProfile me={me} go={go} onSaved={loadMe} />;
+    } else if (route === '/people') {
+      screen = <People go={go} />;
     } else if (route === '/invites') {
       screen = <Invites me={me} go={go} />;
     } else {

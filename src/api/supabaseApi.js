@@ -99,6 +99,24 @@ export function makeSupabaseApi(url, anonKey) {
       check(await sb.from('profiles').update(patch).eq('id', me));
     },
 
+    // ---- members & friendships
+    async listMembers() {
+      const rows = check(await sb.rpc('members_list'));
+      return withUrls(rows, [['avatar_path', 'avatar_url']]);
+    },
+    async friendshipStatus(id) {
+      return check(await sb.rpc('friendship_status', { other: id }));
+    },
+    async sendFriendRequest(id) {
+      return check(await sb.rpc('send_friend_request', { other: id }));
+    },
+    async respondFriendRequest(id, accept) {
+      return check(await sb.rpc('respond_friend_request', { other: id, accept }));
+    },
+    async removeFriend(id) {
+      return check(await sb.rpc('remove_friend', { other: id }));
+    },
+
     // ---- friends list
     async listFriends() {
       const rows = check(await sb.rpc('friends_list'));

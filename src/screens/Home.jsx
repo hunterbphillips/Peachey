@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api/index.js';
 import { Avatar, Spinner, Wordmark } from '../components/ui.jsx';
-import { PenIcon, PeopleIcon } from '../components/Icons.jsx';
+import { PeopleIcon, PlusIcon } from '../components/Icons.jsx';
 import { timeAgo } from '../lib/format.js';
 import { useRefreshOnFocus } from '../lib/hooks.js';
 
@@ -87,7 +87,7 @@ export function Home({ me, go, onCompose, refreshKey }) {
         )}
       </main>
 
-      <button className="fab" onClick={onCompose}><PenIcon /><span>Write</span></button>
+      <button className="fab" onClick={onCompose} aria-label="New post"><PlusIcon width={28} height={28} /></button>
     </>
   );
 }

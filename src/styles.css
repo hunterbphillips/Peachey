@@ -689,3 +689,28 @@ html, body { overscroll-behavior-y: contain; }
 .feed-page > .post:last-child { margin-bottom: 8px; }
 
 .ptr-bottom { top: auto; bottom: env(safe-area-inset-bottom, 0px); }
+
+/* ---------- last seen ---------- */
+.feed-name-wrap { display: flex; flex-direction: column; min-width: 0; line-height: 1.15; }
+.feed-seen { font-size: 13px; color: var(--ink-faint); white-space: nowrap; }
+
+/* ---------- on/off switch ---------- */
+.switch-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; cursor: pointer; }
+.switch-row > span { display: flex; flex-direction: column; gap: 2px; }
+.switch-row strong { font-weight: 600; font-size: 16px; }
+.switch-row small { color: var(--ink-faint); font-size: 13.5px; }
+.switch-row input {
+  appearance: none; -webkit-appearance: none; flex: none; margin: 0; cursor: pointer;
+  width: 52px; height: 30px; border-radius: 15px; position: relative;
+  background: var(--sky-lo); border: 2px solid var(--line);
+  transition: background-color .15s ease;
+}
+.switch-row input::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--cloud); border: 2px solid var(--line);
+  transition: transform .15s ease;
+}
+.switch-row input:checked { background: var(--lime); }
+.switch-row input:checked::after { transform: translateX(22px); }
+.switch-row input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }

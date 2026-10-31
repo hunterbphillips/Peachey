@@ -4,12 +4,20 @@ import { Avatar, ConfirmBar, Menu, Spinner } from '../components/ui.jsx';
 import { BackIcon, MoreIcon, PlusIcon } from '../components/Icons.jsx';
 import { PostCard } from '../components/PostCard.jsx';
 import { FriendButton } from '../components/FriendButton.jsx';
+import { agoLong } from '../lib/format.js';
 
 // A person's page reads like a conversation: it opens at the newest post at
 // the bottom, and scrolling up reveals older posts (loaded as you get near
 // the top, keeping your place). Their photo and name stay in the top bar.
 const docHeight = () => document.documentElement.scrollHeight;
 const distanceFromBottom = () => docHeight() - (window.scrollY + window.innerHeight);
+
+// "Active now" within five minutes, otherwise "Last seen 3 hours ago".
+function lastSeenText(iso) {
+  const mins = (Date.now() - new Date(iso).getTime()) / 60000;
+  if (mins < 5) return 'Active now';
+  return `Last seen ${agoLong(iso)}`;
+}
 
 export function Feed({ userId, me, go, onCompose, onEdit, refreshKey, focusPostId, openComments }) {
   const isMe = userId === me.id;
@@ -20,6 +28,7 @@ export function Feed({ userId, me, go, onCompose, onEdit, refreshKey, focusPostI
   const [error, setError] = useState('');
   const [loadingOlder, setLoadingOlder] = useState(false);
   const [confirmUnfriend, setConfirmUnfriend] = useState(false);
+  const [seenAt, setSeenAt] = useState(null);
 
   const pinned = useRef(!focusPostId);   // keep the view at the bottom while the page settles
   const restore = useRef(null);          // distance from bottom to restore after adding older posts
@@ -34,6 +43,7 @@ export function Feed({ userId, me, go, onCompose, onEdit, refreshKey, focusPostI
       ]);
       if (!prof) { setError('This person isn’t on Peachey.'); return; }
       setPerson(prof); setStatus(rel); setError('');
+      if (rel === 'friends') api.lastSeen(userId).then(setSeenAt).catch(() => {});
       if (rel === 'me' || rel === 'friends') {
         const page = await api.listPosts(userId);
         if (pin && !focusPostId) pinned.current = true;
@@ -152,7 +162,10 @@ export function Feed({ userId, me, go, onCompose, onEdit, refreshKey, focusPostI
         {person && (
           <div className="feed-who">
             <Avatar person={person} size={34} />
-            <h1 className="feed-name">{isMe ? `${person.display_name}` : person.display_name}</h1>
+            <div className="feed-name-wrap">
+              <h1 className="feed-name">{person.display_name}</h1>
+              {status === 'friends' && seenAt && <span className="feed-seen">{lastSeenText(seenAt)}</span>}
+            </div>
           </div>
         )}
         {menuItems.length > 0 && (

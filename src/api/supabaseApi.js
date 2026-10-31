@@ -90,14 +90,25 @@ export function makeSupabaseApi(url, anonKey) {
       if (!rows.length) return null;
       return (await withUrls(rows, [['avatar_path', 'avatar_url']]))[0];
     },
-    async updateProfile({ display_name, avatarFile }) {
+    async updateProfile({ display_name, show_last_seen, avatarFile }) {
       const me = await uid();
       const patch = { display_name };
+      if (typeof show_last_seen === 'boolean') patch.show_last_seen = show_last_seen;
       if (avatarFile) {
         const blob = await compressImage(avatarFile, { maxSize: 480, square: true });
         patch.avatar_path = await upload('avatar', blob);
       }
       check(await sb.from('profiles').update(patch).eq('id', me));
+    },
+
+    // ---- last seen
+    async touchPresence() {
+      await sb.rpc('touch_presence');
+    },
+    async lastSeen(id) {
+      const { data, error } = await sb.from('presence').select('last_seen_at').eq('user_id', id).maybeSingle();
+      if (error) return null;           // e.g. before 05_last_seen.sql has been run
+      return data?.last_seen_at ?? null;
     },
 
     // ---- activity

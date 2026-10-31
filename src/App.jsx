@@ -37,6 +37,17 @@ export function App() {
     loadMe();
   }, [userId, loadMe]);
 
+  // "I'm here": once on opening, then every two minutes while Peachey is on screen.
+  const memberId = me?.id;
+  useEffect(() => {
+    if (!memberId) return;
+    const touch = () => { if (document.visibilityState === 'visible') api.touchPresence().catch(() => {}); };
+    touch();
+    const timer = setInterval(touch, 120_000);
+    document.addEventListener('visibilitychange', touch);
+    return () => { clearInterval(timer); document.removeEventListener('visibilitychange', touch); };
+  }, [memberId]);
+
   useEffect(() => {
     const onHash = () => setRoute(readRoute());
     window.addEventListener('hashchange', onHash);

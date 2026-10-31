@@ -47,7 +47,8 @@ fine). Claude can push the code into it for you.
    click **Run**. The results panel lists your first 30 invite codes.
    Then do the same with `supabase/02_friends.sql` (friendships),
    `supabase/03_comment_hearts.sql` (hearts on comments) and
-   `supabase/04_activity.sql` (the Activity screen), in that order.
+   `supabase/04_activity.sql` (the Activity screen) and
+   `supabase/05_last_seen.sql` ("last seen" on profiles), in that order.
 3. In **Project Settings → API**, copy the **Project URL** and the
    **anon / public** key. Never share the `service_role` key.
 
@@ -129,3 +130,4 @@ Code layout:
 - `supabase/02_friends.sql` — friendships and friends-only visibility (run after schema.sql)
 - `supabase/03_comment_hearts.sql` — hearts on comments (run after 02_friends.sql)
 - `supabase/04_activity.sql` — the Activity screen (run after 03_comment_hearts.sql)
+- `supabase/05_last_seen.sql` — "last seen" for friends, with an off switch (run after 04_activity.sql)

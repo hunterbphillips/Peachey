@@ -41,7 +41,7 @@ function scene(kind) {
 }
 
 function initialData() {
-  const me = { id: 'me', display_name: 'Hunter', bio: 'Making films, mostly about cheese.', avatar_url: null, is_admin: true };
+  const me = { id: 'me', display_name: 'Hunter', avatar_url: null, is_admin: true, show_last_seen: true };
   const friends = [
     { id: 'maya',  display_name: 'Maya Chen',     bio: 'Garden person. Bad at houseplants, good at tomatoes.' },
     { id: 'theo',  display_name: 'Theo Alvarez',  bio: 'Bikes, bread, long walks.' },
@@ -180,9 +180,10 @@ export function makeDemoApi() {
       db.member = true;
     },
     async getProfile(id) { await wait(); const p = person(id); return p ? { ...p } : null; },
-    async updateProfile({ display_name, avatarFile }) {
+    async updateProfile({ display_name, show_last_seen, avatarFile }) {
       await wait(300);
       Object.assign(db.me, { display_name });
+      if (typeof show_last_seen === 'boolean') db.me.show_last_seen = show_last_seen;
       if (avatarFile) db.me.avatar_url = URL.createObjectURL(avatarFile);
     },
 
@@ -191,6 +192,12 @@ export function makeDemoApi() {
       return db.people.filter((p) => p.id !== 'me')
         .map((p) => ({ ...p, status: db.friendships[p.id] ?? 'none' }))
         .sort((a, b) => ((b.status === 'received') - (a.status === 'received')) || a.display_name.localeCompare(b.display_name));
+    },
+    async touchPresence() {},
+    async lastSeen(id) {
+      await wait(80);
+      if (db.friendships[id] !== 'friends') return null;
+      return { maya: ago(2), theo: ago(40), priya: ago(60 * 5), ruth: ago(60 * 26), ben: ago(60 * 24 * 4) }[id] ?? null;
     },
     async listActivity() {
       await wait();

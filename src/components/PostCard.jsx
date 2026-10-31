@@ -113,7 +113,7 @@ export function PostCard({ post, me, author, onEdit, onDeleted, onChanged }) {
         <time className="post-ago" dateTime={p.created_at} title={fullDate(p.created_at)}>{agoLong(p.created_at)}</time>
         <button className={`act share ${shareFallback ? 'on-share' : ''}`} onClick={share}
           aria-label="Share this post" aria-expanded={shareFallback}>
-          <ShareIcon /><span>Share</span>
+          <ShareIcon />
         </button>
       </div>
 

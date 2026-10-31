@@ -1,44 +1,50 @@
 /* =====================================================================
-   Peachey: fruit flavors on a sky.
-   A flat Frutiger Aero sky with iMac G3 colors (tangerine, Bondi blue,
-   lime, grape, strawberry, blueberry, sunflower) and deep navy ink.
-   Mac OS 9 Platinum shows up only where something floats over the page
-   (the writing window, menus, confirmations) and in chunky buttons with
-   crisp outlines and hard, unblurred shadows. Lists stay open on the page.
+   Peachey: pastel fruit on a soft sky.
+   A blush-to-lavender-to-baby-blue page, pastel fruit colours (peach,
+   blush, lavender, mint, butter, periwinkle) and deep plum ink. Mac OS 9
+   Platinum shows up where something floats (the writing window, menus,
+   confirmations) and in chunky buttons with crisp outlines and hard
+   shadows. Only the faintest gradients: a soft wash on the page and a
+   lighter top edge on buttons and avatars. Lists stay open on the page.
    Young Serif for names and titles; Fira Sans for everything else.
    ===================================================================== */
 
 :root {
-  --sky: #D4ECFB;          /* the page */
-  --sky-hi: #E6F4FD;       /* hover wells */
-  --sky-lo: #BFE0F5;       /* pressed wells, pinstripes */
+  --sky-top: #FDEEF5;      /* page wash: blush at the top… */
+  --sky-mid: #F2EDFD;      /* …lavender in the middle… */
+  --sky-bottom: #EAF3FE;   /* …baby blue at the bottom */
+  --sky: #F6EEF9;          /* solid page colour for bars */
+  --sky-hi: #FBF4FD;       /* hover wells */
+  --sky-lo: #E9DDF6;       /* pressed wells, pinstripes */
   --cloud: #FFFFFF;        /* fields and floating windows */
-  --ink: #14213D;          /* deep navy */
-  --ink-soft: #33507F;     /* navy-blue for secondary text */
-  --ink-faint: #5F79A8;    /* periwinkle for captions */
-  --line: #14213D;         /* outlines on chunky things */
-  --hard: #14213D;         /* hard shadow colour */
+  --ink: #2F2550;          /* deep plum-indigo */
+  --ink-soft: #5C4F86;
+  --ink-faint: #8C80B2;
+  --line: #3A2F63;         /* outlines on chunky things */
+  --hard: #3A2F63;         /* hard shadow colour */
 
-  --tangerine: #FF8A3D;
-  --tangerine-text: #C2490A;
-  --bondi: #00A3B4;
-  --bondi-text: #00727F;
-  --lime: #8CD23C;
-  --grape: #8E5CD9;
-  --grape-text: #6B3DB8;
-  --strawberry: #FF4F7B;
-  --strawberry-text: #D61F50;
-  --blueberry: #2F6FEB;
-  --blueberry-text: #2156C4;
-  --sunflower: #FFD23F;
-  --on-bright: #14213D;    /* text on tangerine, lime, sunflower */
-  --on-deep: #FFFFFF;      /* text on bondi, grape, strawberry, blueberry */
-  --danger: #D61F50;
-  --focus: #2F6FEB;
+  --tangerine: #FFB59A;    /* peach */
+  --tangerine-text: #C9582F;
+  --bondi: #9BE1DA;        /* mint-aqua */
+  --bondi-text: #1F8178;
+  --lime: #BFE8A9;         /* mint green */
+  --grape: #CDB8F6;        /* lavender */
+  --grape-text: #7A4FC4;
+  --strawberry: #FFA9C6;   /* blush */
+  --strawberry-text: #D2477A;
+  --heart: #FF7FA8;
+  --blueberry: #AFC5FF;    /* periwinkle */
+  --blueberry-text: #4F6AD3;
+  --sunflower: #FFE7A0;    /* butter */
+  --on-bright: #2F2550;    /* text on any pastel */
+  --on-deep: #2F2550;
+  --danger: #D2477A;
+  --focus: #7A4FC4;
+  --sheen: rgba(255, 255, 255, .45);   /* the faint lighter top edge */
 
   /* tokens the peach mark uses */
-  --clay: var(--tangerine);
-  --sage: var(--lime);
+  --clay: #FFA486;
+  --sage: #9FDB8F;
   --paper-hi: #FFFFFF;
 
   --display: 'Young Serif', 'Iowan Old Style', Georgia, serif;
@@ -49,38 +55,44 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --sky: #0E1838; --sky-hi: #16234A; --sky-lo: #0A1230;
-    --cloud: #1B2A55;
-    --ink: #EEF4FF; --ink-soft: #B9CCF2; --ink-faint: #8EA6D6;
-    --line: #050A1F; --hard: #050A1F;
-    --tangerine: #FF9A55; --tangerine-text: #FFAD73;
-    --bondi: #22C3D3; --bondi-text: #5FDCE8;
-    --lime: #9EE04F;
-    --grape: #A27CF0; --grape-text: #C3A6FF;
-    --strawberry: #FF6B90; --strawberry-text: #FF8FAB;
-    --blueberry: #5B8EF5; --blueberry-text: #8DB0FF;
-    --sunflower: #FFDA5C;
-    --on-bright: #0E1838; --on-deep: #0E1838;
-    --danger: #FF8FAB; --focus: #8DB0FF;
-    --paper-hi: #EEF4FF;
+    --sky-top: #251B3A; --sky-mid: #1E1A3A; --sky-bottom: #181C38;
+    --sky: #211B3A; --sky-hi: #2B2449; --sky-lo: #19152E;
+    --cloud: #2E2650;
+    --ink: #F6EEFF; --ink-soft: #D3C6F0; --ink-faint: #A598CC;
+    --line: #0E0A1C; --hard: #0E0A1C;
+    --tangerine: #FFB49A; --tangerine-text: #FFC2AC;
+    --bondi: #8FDAD3; --bondi-text: #A6EAE3;
+    --lime: #B5E39D;
+    --grape: #C6AFF5; --grape-text: #D7C6FF;
+    --strawberry: #FFA3C2; --strawberry-text: #FFB8D0;
+    --heart: #FF8FB3;
+    --blueberry: #A9C0FF; --blueberry-text: #C1D2FF;
+    --sunflower: #FFE39A;
+    --on-bright: #221A3D; --on-deep: #221A3D;
+    --danger: #FFB8D0; --focus: #D7C6FF;
+    --sheen: rgba(255, 255, 255, .3);
+    --paper-hi: #FFFFFF;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --sky: #0E1838; --sky-hi: #16234A; --sky-lo: #0A1230;
-  --cloud: #1B2A55;
-  --ink: #EEF4FF; --ink-soft: #B9CCF2; --ink-faint: #8EA6D6;
-  --line: #050A1F; --hard: #050A1F;
-  --tangerine: #FF9A55; --tangerine-text: #FFAD73;
-  --bondi: #22C3D3; --bondi-text: #5FDCE8;
-  --lime: #9EE04F;
-  --grape: #A27CF0; --grape-text: #C3A6FF;
-  --strawberry: #FF6B90; --strawberry-text: #FF8FAB;
-  --blueberry: #5B8EF5; --blueberry-text: #8DB0FF;
-  --sunflower: #FFDA5C;
-  --on-bright: #0E1838; --on-deep: #0E1838;
-  --danger: #FF8FAB; --focus: #8DB0FF;
-  --paper-hi: #EEF4FF;
+  --sky-top: #251B3A; --sky-mid: #1E1A3A; --sky-bottom: #181C38;
+  --sky: #211B3A; --sky-hi: #2B2449; --sky-lo: #19152E;
+  --cloud: #2E2650;
+  --ink: #F6EEFF; --ink-soft: #D3C6F0; --ink-faint: #A598CC;
+  --line: #0E0A1C; --hard: #0E0A1C;
+  --tangerine: #FFB49A; --tangerine-text: #FFC2AC;
+  --bondi: #8FDAD3; --bondi-text: #A6EAE3;
+  --lime: #B5E39D;
+  --grape: #C6AFF5; --grape-text: #D7C6FF;
+  --strawberry: #FFA3C2; --strawberry-text: #FFB8D0;
+  --heart: #FF8FB3;
+  --blueberry: #A9C0FF; --blueberry-text: #C1D2FF;
+  --sunflower: #FFE39A;
+  --on-bright: #221A3D; --on-deep: #221A3D;
+  --danger: #FFB8D0; --focus: #D7C6FF;
+  --sheen: rgba(255, 255, 255, .3);
+  --paper-hi: #FFFFFF;
   color-scheme: dark;
 }
 
@@ -92,7 +104,9 @@ body {
   font-size: 17px;
   line-height: 1.5;
   color: var(--ink);
-  background: var(--sky);
+  background-color: var(--sky);
+  background-image: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 55%, var(--sky-bottom) 100%);
+  background-attachment: fixed;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
@@ -136,7 +150,7 @@ h1, h2 { text-wrap: balance; }
   border-radius: var(--r);
   font-weight: 700; font-size: 16px;
   color: var(--on-bright);
-  background: var(--tangerine);
+  background: linear-gradient(180deg, var(--sheen), transparent 60%), var(--tangerine);
   border: 2px solid var(--line);
   box-shadow: 3px 3px 0 var(--hard);
   transition: transform .08s ease, box-shadow .08s ease;
@@ -153,7 +167,7 @@ h1, h2 { text-wrap: balance; }
   width: 60px; height: 60px; border-radius: 50%;
   display: grid; place-items: center;
   color: var(--on-bright);
-  background: var(--tangerine);
+  background: radial-gradient(circle at 38% 30%, var(--sheen), transparent 62%), var(--tangerine);
   border: 2px solid var(--line);
   box-shadow: 4px 4px 0 var(--hard);
   z-index: 20;
@@ -200,7 +214,8 @@ h1, h2 { text-wrap: balance; }
   position: sticky; top: 0; z-index: 10;
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   padding: calc(10px + env(safe-area-inset-top)) 16px 10px;
-  background: var(--sky);
+  background: color-mix(in srgb, var(--sky-top) 82%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
 }
 .topbar .back { margin-left: -8px; }
 .topbar-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
@@ -209,14 +224,17 @@ h1, h2 { text-wrap: balance; }
 .center-fill { min-height: 70vh; display: grid; place-items: center; }
 
 /* ---------- avatars: fruit-flavoured tiles ---------- */
-.avatar { border-radius: var(--r); object-fit: cover; flex: none; display: block; border: 2px solid var(--line); }
-.avatar-initials { display: grid; place-items: center; font-family: var(--display); line-height: 1; }
-.tint-clay { background: var(--tangerine); color: var(--on-bright); }
-.tint-sage { background: var(--lime); color: var(--on-bright); }
-.tint-ink-blue { background: var(--bondi); color: var(--on-deep); }
-.tint-plum { background: var(--grape); color: var(--on-deep); }
-.tint-ochre { background: var(--sunflower); color: var(--on-bright); }
-.tint-rose { background: var(--strawberry); color: var(--on-deep); }
+.avatar { border-radius: 50%; object-fit: cover; flex: none; display: block; border: 2px solid var(--line); }
+.avatar-initials {
+  display: grid; place-items: center; font-family: var(--display); line-height: 1;
+  background-image: linear-gradient(180deg, var(--sheen), transparent 65%);
+}
+.tint-clay { background-color: var(--tangerine); color: var(--on-bright); }
+.tint-sage { background-color: var(--lime); color: var(--on-bright); }
+.tint-ink-blue { background-color: var(--bondi); color: var(--on-deep); }
+.tint-plum { background-color: var(--grape); color: var(--on-deep); }
+.tint-ochre { background-color: var(--sunflower); color: var(--on-bright); }
+.tint-rose { background-color: var(--strawberry); color: var(--on-deep); }
 
 /* ---------- friends list: open, with dotted leaders ---------- */
 .friend-list { list-style: none; margin: 0 -10px; padding: 0; display: flex; flex-direction: column; gap: 2px; }
@@ -313,9 +331,9 @@ h1, h2 { text-wrap: balance; }
 }
 .act:hover { background: var(--sky-hi); }
 .act.heart { padding: 0 6px 0 10px; }
-.act.heart.on { color: var(--strawberry); }
+.act.heart.on { color: var(--heart); }
 .act.on-aqua { color: var(--bondi-text); }
-.act.share { margin-left: auto; }
+.act.share { padding: 0 8px; margin-left: 2px; }
 .act.on-share { color: var(--grape-text); }
 .act.pop svg { animation: pop .45s cubic-bezier(.3, 1.6, .5, 1); }
 @keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.35) rotate(-8deg); } 100% { transform: scale(1); } }
@@ -384,7 +402,7 @@ h1, h2 { text-wrap: balance; }
   display: flex; flex-direction: column;
 }
 .menu-pop button { text-align: left; padding: 9px 12px; border-radius: 3px; font-weight: 600; font-size: 15px; }
-.menu-pop button:hover { background: var(--blueberry); color: var(--on-deep); }
+.menu-pop button:hover { background: var(--grape); color: var(--on-deep); }
 .menu-pop .danger { color: var(--danger); }
 .menu-pop .danger:hover { background: var(--strawberry); color: var(--on-deep); }
 
@@ -415,11 +433,11 @@ h1, h2 { text-wrap: balance; }
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   padding: 8px 8px 8px 14px;
   border-bottom: 2px solid var(--line);
-  background: repeating-linear-gradient(180deg, var(--sky-hi) 0 2px, var(--sky-lo) 2px 4px);
+  background: repeating-linear-gradient(180deg, var(--sky-top) 0 2px, var(--sky-lo) 2px 4px);
 }
 .sheet-head h2 {
   font-family: var(--display); font-weight: 400; font-size: 18px;
-  padding: 0 10px; background: var(--sky-hi); border-radius: 3px;
+  padding: 0 10px; background: var(--cloud); border-radius: 3px;
 }
 .sheet-head .icon-btn { width: 32px; height: 32px; background: var(--cloud); border: 2px solid var(--line); border-radius: 4px; color: var(--ink); }
 .sheet-body { padding: 14px 20px 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }

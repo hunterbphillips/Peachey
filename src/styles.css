@@ -714,3 +714,9 @@ html, body { overscroll-behavior-y: contain; }
 .switch-row input:checked { background: var(--lime); }
 .switch-row input:checked::after { transform: translateX(22px); }
 .switch-row input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* posts start straight with their words or photo; the ••• menu ends the bottom row */
+.post-body { padding-top: 2px; }
+.post-menu { margin-left: auto; }
+.post-menu .menu-pop { top: auto; bottom: 42px; }
+.post-ago .edited { color: var(--ink-faint); }

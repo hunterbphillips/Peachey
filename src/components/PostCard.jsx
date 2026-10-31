@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { api } from '../api/index.js';
 import { ConfirmBar, Menu } from './ui.jsx';
 import { CommentIcon, HeartIcon, LinkIcon, MoreIcon, ShareIcon } from './Icons.jsx';
-import { agoLong, entryDate, fullDate, joinNames, linkParts, splitLinks } from '../lib/format.js';
+import { agoLong, fullDate, joinNames, linkParts, splitLinks } from '../lib/format.js';
 import { Comments } from './Comments.jsx';
 import { sharePost, shareText } from '../lib/share.js';
 import { PhotoViewer } from './PhotoViewer.jsx';
@@ -66,23 +66,6 @@ export function PostCard({ post, me, author, onEdit, onDeleted, onChanged, start
 
   return (
     <article className="post glass" id={`post-${p.id}`}>
-      <div className="post-head">
-        <time dateTime={p.created_at} title={fullDate(p.created_at)}>
-          {entryDate(p.created_at)}{p.edited_at && <span className="edited"> · edited</span>}
-        </time>
-        {mine && (
-          <Menu label="Post options" trigger={<MoreIcon />} items={[
-            { label: 'Edit post', onClick: () => onEdit(p) },
-            { label: 'Delete post', onClick: () => setConfirming(true), danger: true },
-          ]} />
-        )}
-      </div>
-
-      {confirming && (
-        <ConfirmBar text="Delete this post and its hearts and comments?" action="Delete post"
-          onCancel={() => setConfirming(false)} onConfirm={remove} />
-      )}
-
       {p.body && (
         <p className="post-body">
           {splitLinks(p.body).map((part, i) => part.href
@@ -124,12 +107,27 @@ export function PostCard({ post, me, author, onEdit, onDeleted, onChanged, start
           aria-expanded={showComments} aria-label={`${p.comment_count} comments`}>
           <CommentIcon /><span>{p.comment_count}</span>
         </button>
-        <time className="post-ago" dateTime={p.created_at} title={fullDate(p.created_at)}>{agoLong(p.created_at)}</time>
+        <time className="post-ago" dateTime={p.created_at} title={fullDate(p.created_at)}>
+          {agoLong(p.created_at)}{p.edited_at && <span className="edited"> · edited</span>}
+        </time>
         <button className={`act share ${shareFallback ? 'on-share' : ''}`} onClick={share}
           aria-label="Share this post" aria-expanded={shareFallback}>
           <ShareIcon />
         </button>
+        {mine && (
+          <span className="post-menu">
+            <Menu label="Post options" trigger={<MoreIcon />} items={[
+              { label: 'Edit post', onClick: () => onEdit(p) },
+              { label: 'Delete post', onClick: () => setConfirming(true), danger: true },
+            ]} />
+          </span>
+        )}
       </div>
+
+      {confirming && (
+        <ConfirmBar text="Delete this post and its hearts and comments?" action="Delete post"
+          onCancel={() => setConfirming(false)} onConfirm={remove} />
+      )}
 
       {shareFallback && (
         <div className="share-fallback">

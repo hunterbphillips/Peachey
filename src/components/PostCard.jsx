@@ -1,16 +1,28 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { api } from '../api/index.js';
 import { ConfirmBar, Menu } from './ui.jsx';
 import { CommentIcon, HeartIcon, LinkIcon, MoreIcon, ShareIcon } from './Icons.jsx';
 import { agoLong, entryDate, fullDate, joinNames, linkParts, splitLinks } from '../lib/format.js';
 import { Comments } from './Comments.jsx';
 import { sharePost, shareText } from '../lib/share.js';
+import { PhotoViewer } from './PhotoViewer.jsx';
 
 export function PostCard({ post, me, author, onEdit, onDeleted, onChanged, startWithComments }) {
   const [p, setP] = useState(post);
   const [showComments, setShowComments] = useState(!!startWithComments);
   const [hearters, setHearters] = useState(null);
   const [pop, setPop] = useState(false);
+  const [viewing, setViewing] = useState(false);
+  // One tap opens the photo; a quick second tap hearts it instead.
+  const tapTimer = useRef(null);
+  function photoTap() {
+    if (tapTimer.current) {
+      clearTimeout(tapTimer.current); tapTimer.current = null;
+      if (!p.hearted_by_me) toggleHeart();
+      return;
+    }
+    tapTimer.current = setTimeout(() => { tapTimer.current = null; setViewing(true); }, 260);
+  }
   const mine = p.author_id === me.id;
 
   async function toggleHeart() {
@@ -81,7 +93,9 @@ export function PostCard({ post, me, author, onEdit, onDeleted, onChanged, start
 
       {p.image_url && (
         <div className="post-photo">
-          <img src={p.image_url} alt={p.body ? '' : 'Photo'} loading="lazy" onDoubleClick={() => !p.hearted_by_me && toggleHeart()} />
+          <button className="photo-open" onClick={photoTap} aria-label="View photo full screen">
+            <img src={p.image_url} alt={p.body ? '' : 'Photo'} loading="lazy" draggable="false" />
+          </button>
         </div>
       )}
 
@@ -138,6 +152,8 @@ export function PostCard({ post, me, author, onEdit, onDeleted, onChanged, start
       {hearters && hearters.length > 0 && (
         <p className="hearters">Hearted by {joinNames(hearters.map((h) => (h.user_id === me.id ? 'you' : h.display_name)))}</p>
       )}
+
+      {viewing && <PhotoViewer src={p.image_url} alt={p.body} onClose={() => setViewing(false)} />}
 
       {showComments && (
         <Comments postId={p.id} me={me}

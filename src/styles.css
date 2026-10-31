@@ -41,6 +41,7 @@
   --danger: #D2477A;
   --focus: #7A4FC4;
   --sheen: rgba(255, 255, 255, .45);   /* the faint lighter top edge */
+  --hairline: rgba(47, 37, 80, .09);  /* very thin dividers */
 
   /* tokens the peach mark uses */
   --clay: #FFA486;
@@ -71,6 +72,7 @@
     --on-bright: #221A3D; --on-deep: #221A3D;
     --danger: #FFB8D0; --focus: #D7C6FF;
     --sheen: rgba(255, 255, 255, .3);
+    --hairline: rgba(246, 238, 255, .09);
     --paper-hi: #FFFFFF;
     color-scheme: dark;
   }
@@ -92,6 +94,7 @@
   --on-bright: #221A3D; --on-deep: #221A3D;
   --danger: #FFB8D0; --focus: #D7C6FF;
   --sheen: rgba(255, 255, 255, .3);
+  --hairline: rgba(246, 238, 255, .09);
   --paper-hi: #FFFFFF;
   color-scheme: dark;
 }
@@ -237,7 +240,21 @@ h1, h2 { text-wrap: balance; }
 .tint-rose { background-color: var(--strawberry); color: var(--on-deep); }
 
 /* ---------- friends list: open, with dotted leaders ---------- */
-.friend-list { list-style: none; margin: 0 -10px; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.friend-list {
+  list-style: none; margin: 0; padding: 4px 0;
+  display: flex; flex-direction: column;
+  background: var(--cloud);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 4px 4px 0 var(--hard);
+  overflow: hidden;
+}
+/* very thin, subtle line between friends (inset to start at the text) */
+.friend-list li { position: relative; }
+.friend-list li + li::before {
+  content: ''; position: absolute; top: 0; right: 0; left: 80px; height: 1px;
+  background: var(--hairline); pointer-events: none;
+}
 .friend-row {
   width: 100%;
   display: flex; align-items: center; gap: 16px;
@@ -246,6 +263,7 @@ h1, h2 { text-wrap: balance; }
   border-radius: var(--r);
 }
 .friend-row:hover { background: var(--sky-hi); }
+.friend-row { padding: 12px 14px; border-radius: 0; }
 .friend-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .friend-name {
   font-family: var(--display); font-size: 20px; line-height: 1.25;
@@ -260,9 +278,9 @@ h1, h2 { text-wrap: balance; }
 }
 .friend-line time {
   flex: none; margin-left: auto; padding-left: 12px;
-  font-size: 14.5px; font-weight: 500; color: var(--ink-faint); font-variant-numeric: tabular-nums;
+  font-size: 14.5px; font-weight: 400; color: var(--ink-faint); font-variant-numeric: tabular-nums;
 }
-.friend-row.is-new .friend-line time { color: var(--blueberry-text); font-weight: 700; }
+.friend-row.is-new .friend-line time { color: var(--blueberry-text); font-weight: 400; }
 .friend-row.is-new .friend-name { font-weight: 400; }
 /* "new": a lime dot (the word stays for screen readers) */
 .new-mark {
@@ -611,3 +629,45 @@ h1, h2 { text-wrap: balance; }
 /* a post you arrived at from Activity glows briefly */
 .post { transition: background-color .6s ease, box-shadow .6s ease; border-radius: var(--r); scroll-margin-top: 72px; }
 .post.focus { background-color: color-mix(in srgb, var(--sunflower) 35%, transparent); box-shadow: 0 0 0 10px color-mix(in srgb, var(--sunflower) 35%, transparent); }
+
+/* ---------- pull to refresh ---------- */
+html, body { overscroll-behavior-y: contain; }
+.ptr {
+  position: fixed; left: 50%; top: env(safe-area-inset-top, 0px); z-index: 40;
+  width: 40px; height: 40px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--cloud); border: 2px solid var(--line); box-shadow: 3px 3px 0 var(--hard);
+  pointer-events: none;
+}
+.ptr-ball {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: conic-gradient(var(--tangerine) 0 33%, var(--bondi) 0 66%, var(--lime) 0);
+  border: 2px solid var(--line);
+}
+.ptr-ball.spinning { animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- photo viewer ---------- */
+.photo-open { display: block; width: 100%; padding: 0; cursor: zoom-in; -webkit-tap-highlight-color: transparent; }
+.photo-viewer {
+  position: fixed; inset: 0; z-index: 60;
+  display: grid; place-items: center;
+  background: rgba(20, 14, 38, .94);
+  animation: fade .18s ease;
+  overflow: hidden;
+  touch-action: none;
+}
+.photo-viewer img {
+  max-width: 100vw; max-height: 100vh; max-height: 100dvh;
+  object-fit: contain;
+  transition: transform .2s ease;
+  user-select: none; -webkit-user-select: none;
+}
+.photo-viewer img.dragging { transition: none; }
+.photo-close {
+  position: absolute; z-index: 1;
+  top: calc(12px + env(safe-area-inset-top, 0px)); right: calc(12px + env(safe-area-inset-right, 0px));
+  width: 42px; height: 42px; border-radius: 50%;
+  color: #2F2550; background: #FFFFFF; border: 2px solid #2F2550;
+}
+.photo-close:hover { background: #FFFFFF; color: #2F2550; }

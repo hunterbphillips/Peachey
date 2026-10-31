@@ -10,6 +10,7 @@ import { EditProfile } from './screens/EditProfile.jsx';
 import { Invites } from './screens/Invites.jsx';
 import { People } from './screens/People.jsx';
 import { Activity } from './screens/Activity.jsx';
+import { PullToRefresh, pullToRefreshAvailable } from './components/PullToRefresh.jsx';
 
 const readRoute = () => window.location.hash.replace(/^#/, '') || '/';
 
@@ -44,6 +45,11 @@ export function App() {
 
   const go = useCallback((path) => { window.location.hash = path; }, []);
 
+  // Pull-to-refresh reloads whatever screen is showing (not the profile editor,
+  // where it would throw away unsaved changes).
+  const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
+  const canPull = !!(userId && me && route !== '/me/edit' && !composer) && (api.isDemo || pullToRefreshAvailable());
+
   let screen;
   if (userId === undefined || (userId && me === undefined)) {
     screen = <div className="center-fill"><Spinner /></div>;
@@ -60,13 +66,13 @@ export function App() {
       screen = <Feed key={m[1]} userId={m[1]} me={me} go={go} onCompose={compose} onEdit={edit} refreshKey={refreshKey}
         focusPostId={m[2]} openComments={!!m[3]} />;
     } else if (route === '/activity') {
-      screen = <Activity me={me} go={go} />;
+      screen = <Activity key={`activity-${refreshKey}`} me={me} go={go} />;
     } else if (route === '/me/edit') {
       screen = <EditProfile me={me} go={go} onSaved={loadMe} />;
     } else if (route === '/people') {
-      screen = <People go={go} />;
+      screen = <People key={`people-${refreshKey}`} go={go} />;
     } else if (route === '/invites') {
-      screen = <Invites me={me} go={go} />;
+      screen = <Invites key={`invites-${refreshKey}`} me={me} go={go} />;
     } else {
       screen = <Home me={me} go={go} onCompose={compose} refreshKey={refreshKey} />;
     }
@@ -80,6 +86,7 @@ export function App() {
           {userId && me && <button className="text-btn inline" onClick={() => api.signOut()}>See sign-in screens</button>}
         </div>
       )}
+      <PullToRefresh enabled={canPull} onRefresh={refresh} />
       {screen}
       {composer && (
         <Composer editing={composer.editing} onClose={() => setComposer(null)}

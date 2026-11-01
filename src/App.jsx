@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useLayoutEffect, useCallback, useEffect, useState } from 'react';
 import { api } from './api/index.js';
 import { Spinner } from './components/ui.jsx';
 import { Composer } from './components/Composer.jsx';
@@ -54,6 +54,14 @@ export function App() {
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
+
+  // Every screen opens at its top; a person's page then scrolls itself down
+  // to the newest post once it loads. (Without this, coming home from a
+  // profile kept the profile's scroll position and tucked your box under the bar.)
+  useLayoutEffect(() => {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+  }, [route]);
 
   const go = useCallback((path) => { window.location.hash = path; }, []);
 

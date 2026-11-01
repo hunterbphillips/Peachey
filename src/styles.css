@@ -726,3 +726,10 @@ html, body { overscroll-behavior-y: contain; }
 /* tighter rhythm between posts on a person's page (about 30% less space) */
 .feed-page { gap: 12px; }
 .feed-page .post ~ .post::before { margin: 4px auto 15px; }
+
+/* the dots between posts: smaller, in the logo's peach pink */
+.feed-page .post ~ .post::before {
+  width: 30px; height: 6px;
+  margin: 5px auto 16px;
+  background: radial-gradient(circle 3px at 3px 3px, var(--peach-front) 98%, transparent) 0 0 / 12px 6px repeat-x;
+}

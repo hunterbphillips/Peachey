@@ -680,8 +680,8 @@ html, body { overscroll-behavior-y: contain; }
 .feed-who { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
 .feed-who .avatar { border-width: 1.5px; }
 .feed-name {
-  font-family: var(--display); font-weight: 400; font-size: 21px; line-height: 1.2;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-family: var(--display); font-weight: 400; font-size: 21px; line-height: 1.15;
+  overflow: hidden; overflow-wrap: anywhere;
 }
 .feed-bar .menu { margin-left: auto; }
 .feed-page { padding-top: 0; }
@@ -694,7 +694,7 @@ html, body { overscroll-behavior-y: contain; }
 .ptr-bottom { top: auto; bottom: env(safe-area-inset-bottom, 0px); }
 
 /* ---------- last seen ---------- */
-.feed-name-wrap { display: flex; flex-direction: column; min-width: 0; line-height: 1.15; }
+.feed-name-wrap { display: flex; flex-direction: column; min-width: 0; flex: 1; line-height: 1.15; }
 .feed-seen { font-size: 13px; color: var(--ink-faint); white-space: nowrap; }
 
 /* ---------- on/off switch ---------- */

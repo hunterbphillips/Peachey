@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { api } from '../api/index.js';
 import { Avatar, ConfirmBar, Spinner } from '../components/ui.jsx';
 import { TopActions } from '../components/TopActions.jsx';
+import { FitName } from '../components/FitName.jsx';
 import { BackIcon, PlusIcon } from '../components/Icons.jsx';
 import { PostCard } from '../components/PostCard.jsx';
 import { FriendButton } from '../components/FriendButton.jsx';
@@ -160,7 +161,7 @@ export function Feed({ userId, me, go, onCompose, onEdit, refreshKey, focusPostI
           <div className="feed-who">
             <Avatar person={person} size={34} />
             <div className="feed-name-wrap">
-              <h1 className="feed-name">{person.display_name}</h1>
+              <FitName className="feed-name" text={person.display_name} />
               {status === 'friends' && seenAt && <span className="feed-seen">{lastSeenText(seenAt)}</span>}
             </div>
           </div>

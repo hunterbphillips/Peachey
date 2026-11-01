@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api/index.js';
-import { Avatar, Spinner, Wordmark } from '../components/ui.jsx';
-import { BellIcon, PeopleIcon, PlusIcon } from '../components/Icons.jsx';
+import { Avatar, Menu, Spinner, Wordmark } from '../components/ui.jsx';
+import { BellIcon, GearIcon, PeopleIcon, PlusIcon } from '../components/Icons.jsx';
 import { timeAgo } from '../lib/format.js';
 import { useRefreshOnFocus } from '../lib/hooks.js';
 
@@ -44,6 +44,14 @@ export function Home({ me, go, onCompose, refreshKey }) {
             <PeopleIcon />
             {requests > 0 && <span className="badge">{requests}</span>}
           </button>
+          <Menu label="Settings" trigger={<GearIcon />} items={[
+            { label: 'Edit profile', onClick: () => go('/me/edit') },
+            ...(me.is_admin ? [
+              { label: 'Invite codes', onClick: () => go('/invites') },
+              { label: 'Reports', onClick: () => go('/reports') },
+            ] : []),
+            { label: 'Sign out', onClick: () => api.signOut() },
+          ]} />
         </div>
       </header>
 

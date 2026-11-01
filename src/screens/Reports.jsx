@@ -29,7 +29,7 @@ export function Reports({ me, go }) {
   return (
     <>
       <header className="topbar">
-        <button className="icon-btn back" onClick={() => go(`/u/${me.id}`)} aria-label="Back to your profile"><BackIcon /></button>
+        <button className="icon-btn back" onClick={() => go("/")} aria-label="Back home"><BackIcon /></button>
       </header>
       <main className="page">
         <div className="home-intro">

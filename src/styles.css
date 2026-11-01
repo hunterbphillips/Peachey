@@ -552,6 +552,7 @@ h1, h2 { text-wrap: balance; }
   color: var(--ink);
 }
 .people-btn:hover { background: var(--sky-hi); }
+.topbar-actions .menu .icon-btn { color: var(--ink); }
 .badge {
   position: absolute; top: -3px; right: -5px;
   min-width: 20px; height: 20px; padding: 0 5px;

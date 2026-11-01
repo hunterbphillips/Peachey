@@ -19,14 +19,14 @@ export function EditProfile({ me, go, onSaved }) {
     try {
       await api.updateProfile({ display_name: name.trim(), show_last_seen: showSeen, avatarFile: file });
       await onSaved();
-      go(`/u/${me.id}`);
+      go("/");
     } catch (err) { setError(err.message); setBusy(false); }
   }
 
   return (
     <>
       <header className="topbar">
-        <button className="icon-btn back" onClick={() => go(`/u/${me.id}`)} aria-label="Back to your profile"><BackIcon /></button>
+        <button className="icon-btn back" onClick={() => go("/")} aria-label="Back home"><BackIcon /></button>
       </header>
       <main className="page">
         <form className="glass panel form-panel" onSubmit={save}>
@@ -53,7 +53,6 @@ export function EditProfile({ me, go, onSaved }) {
           </label>
           <ErrorNote error={error} />
           <button className="gel-btn wide" disabled={busy || !name.trim()}>{busy ? 'Saving…' : 'Save profile'}</button>
-          <button type="button" className="text-btn" onClick={() => api.signOut()}>Sign out</button>
           {!me.is_admin && !confirmDelete && (
             <button type="button" className="text-btn danger-text" onClick={() => setConfirmDelete(true)}>Delete my account</button>
           )}

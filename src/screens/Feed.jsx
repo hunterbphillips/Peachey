@@ -146,11 +146,9 @@ export function Feed({ userId, me, go, onCompose, onEdit, refreshKey, focusPostI
   const canSeePosts = status === 'me' || status === 'friends';
   const oldestFirst = posts ? [...posts].reverse() : null;
 
+  // Your own settings live behind the gear on the home screen.
   const menuItems = isMe
-    ? [
-      { label: 'Edit profile', onClick: () => go('/me/edit') },
-      ...(me.is_admin ? [{ label: 'Invite codes', onClick: () => go('/invites') }, { label: 'Reports', onClick: () => go('/reports') }] : []),
-    ]
+    ? []
     : status === 'friends'
       ? [{ label: 'Remove friend', onClick: () => setConfirmUnfriend(true), danger: true }]
       : [];

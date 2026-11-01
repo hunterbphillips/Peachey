@@ -28,7 +28,6 @@ export function Home({ me, go, onCompose, refreshKey }) {
   useEffect(() => { load(); }, [load, refreshKey]);
   useRefreshOnFocus(load);
 
-  const newCount = friends?.filter((f) => f.has_new).length ?? 0;
 
   return (
     <>
@@ -45,9 +44,6 @@ export function Home({ me, go, onCompose, refreshKey }) {
             <PeopleIcon />
             {requests > 0 && <span className="badge">{requests}</span>}
           </button>
-          <button className="me-btn" onClick={() => go(`/u/${me.id}`)} aria-label="Your profile">
-            <Avatar person={me} size={38} />
-          </button>
         </div>
       </header>
 
@@ -59,7 +55,7 @@ export function Home({ me, go, onCompose, refreshKey }) {
               <span className="friend-main">
                 <span className="me-line">
                   <span className="friend-name">{me.display_name}</span>
-                  <span className="me-tag">Your page</span>
+                  <span className="me-tag">your page</span>
                 </span>
                 <span className="friend-line">
                   <span className="friend-preview">
@@ -74,20 +70,10 @@ export function Home({ me, go, onCompose, refreshKey }) {
           </li>
         </ul>
 
-        <div className="home-intro">
-          <h1>Friends</h1>
-          <p>{friends == null ? ' ' : newCount === 0 ? 'You’re all caught up.' : `${newCount} with something new`}</p>
-        </div>
 
         {error && <p className="error-note" role="alert">Couldn’t load your friends. {error}</p>}
         {friends == null && !error && <Spinner />}
 
-        {requests > 0 && (
-          <button className="glass panel request-nudge" onClick={() => go('/people')}>
-            <span className="new-mark" aria-hidden="true">New</span>
-            {requests === 1 ? '1 friend request is waiting' : `${requests} friend requests are waiting`}
-          </button>
-        )}
 
         {friends && friends.length === 0 && (
           <div className="glass panel empty">

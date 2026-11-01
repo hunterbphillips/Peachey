@@ -722,3 +722,7 @@ html, body { overscroll-behavior-y: contain; }
 .post-menu { margin-left: auto; }
 .post-menu .menu-pop { top: auto; bottom: 42px; }
 .post-ago .edited { color: var(--ink-faint); }
+
+/* tighter rhythm between posts on a person's page (about 30% less space) */
+.feed-page { gap: 12px; }
+.feed-page .post ~ .post::before { margin: 4px auto 15px; }

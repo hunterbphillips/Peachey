@@ -823,3 +823,9 @@ html, body { overscroll-behavior-y: contain; }
 .zoom-row input { flex: 1; accent-color: var(--peach-front); }
 .zoom-small, .zoom-big { font-weight: 700; color: var(--ink-soft); width: 14px; text-align: center; }
 .zoom-big { font-size: 20px; }
+
+/* profile pages: name on the left, bell / people / gear on the right */
+.feed-bar .topbar-actions { gap: 2px; flex: none; }
+.feed-bar .feed-who { gap: 8px; }
+/* "Remove friend?" stays in view under the header, wherever you've scrolled */
+.feed-page > .confirm-bar { position: sticky; top: calc(66px + env(safe-area-inset-top)); z-index: 9; }

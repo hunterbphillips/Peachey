@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { api } from '../api/index.js';
-import { Avatar, ConfirmBar, Menu, Spinner } from '../components/ui.jsx';
-import { BackIcon, MoreIcon, PlusIcon } from '../components/Icons.jsx';
+import { Avatar, ConfirmBar, Spinner } from '../components/ui.jsx';
+import { TopActions } from '../components/TopActions.jsx';
+import { BackIcon, PlusIcon } from '../components/Icons.jsx';
 import { PostCard } from '../components/PostCard.jsx';
 import { FriendButton } from '../components/FriendButton.jsx';
 import { agoLong } from '../lib/format.js';
@@ -146,12 +147,10 @@ export function Feed({ userId, me, go, onCompose, onEdit, refreshKey, focusPostI
   const canSeePosts = status === 'me' || status === 'friends';
   const oldestFirst = posts ? [...posts].reverse() : null;
 
-  // Your own settings live behind the gear on the home screen.
-  const menuItems = isMe
-    ? []
-    : status === 'friends'
-      ? [{ label: 'Remove friend', onClick: () => setConfirmUnfriend(true), danger: true }]
-      : [];
+  // A friend's page adds "Remove friend" to the top of the gear menu.
+  const extraItems = status === 'friends'
+    ? [{ label: 'Remove friend', onClick: () => setConfirmUnfriend(true), danger: true }]
+    : [];
 
   return (
     <>
@@ -166,10 +165,7 @@ export function Feed({ userId, me, go, onCompose, onEdit, refreshKey, focusPostI
             </div>
           </div>
         )}
-        {menuItems.length > 0 && (
-          <Menu label={isMe ? 'Profile options' : `Options for ${person?.display_name ?? 'this person'}`}
-            trigger={<MoreIcon />} items={menuItems} />
-        )}
+        <TopActions me={me} go={go} refreshKey={refreshKey} extraItems={extraItems} />
       </header>
 
       <main className="page feed-page" ref={mainRef}>

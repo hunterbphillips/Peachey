@@ -1,27 +1,24 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api/index.js';
-import { Avatar, Menu, Spinner, Wordmark } from '../components/ui.jsx';
-import { BellIcon, GearIcon, PeopleIcon, PlusIcon } from '../components/Icons.jsx';
+import { Avatar, Spinner, Wordmark } from '../components/ui.jsx';
+import { TopActions } from '../components/TopActions.jsx';
+import { PlusIcon } from '../components/Icons.jsx';
 import { timeAgo } from '../lib/format.js';
 import { useRefreshOnFocus } from '../lib/hooks.js';
 
 export function Home({ me, go, onCompose, refreshKey }) {
   const [friends, setFriends] = useState(null);
-  const [requests, setRequests] = useState(0);
-  const [unread, setUnread] = useState(0);
   const [myLast, setMyLast] = useState(undefined); // undefined = loading, null = no posts yet
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
     try {
-      const [f, members, u, mine] = await Promise.all([
-        api.listFriends(), api.listMembers(), api.activityUnread().catch(() => 0),
+      const [f, mine] = await Promise.all([
+        api.listFriends(),
         api.listPosts(me.id).catch(() => ({ posts: [] })),
       ]);
       setFriends(f);
       setMyLast(mine.posts[0] ?? null);
-      setUnread(u);
-      setRequests(members.filter((m) => m.status === 'received').length);
       setError('');
     } catch (e) { setError(e.message); }
   }, [me.id]);
@@ -33,26 +30,7 @@ export function Home({ me, go, onCompose, refreshKey }) {
     <>
       <header className="topbar">
         <Wordmark />
-        <div className="topbar-actions">
-          <button className="people-btn" onClick={() => go('/activity')}
-            aria-label={unread ? `Activity, ${unread} new` : 'Activity'}>
-            <BellIcon />
-            {unread > 0 && <span className="badge">{unread > 99 ? '99+' : unread}</span>}
-          </button>
-          <button className="people-btn" onClick={() => go('/people')}
-            aria-label={requests ? `People, ${requests} friend request${requests > 1 ? 's' : ''}` : 'People'}>
-            <PeopleIcon />
-            {requests > 0 && <span className="badge">{requests}</span>}
-          </button>
-          <Menu label="Settings" trigger={<GearIcon />} items={[
-            { label: 'Edit profile', onClick: () => go('/me/edit') },
-            ...(me.is_admin ? [
-              { label: 'Invite codes', onClick: () => go('/invites') },
-              { label: 'Reports', onClick: () => go('/reports') },
-            ] : []),
-            { label: 'Sign out', onClick: () => api.signOut() },
-          ]} />
-        </div>
+        <TopActions me={me} go={go} refreshKey={refreshKey} />
       </header>
 
       <main className="page">

@@ -65,7 +65,9 @@ function initialData() {
     post('priya', 60 * 30, 'Halfway through the book club pick and I have Opinions. Saving them for Thursday.'),
     post('priya', 60 * 24 * 4, '', { image_url: scene('dusk') }),
     post('jonas', 60 * 24 * 9, 'Moved desks at work and now I can see a tree. Life is good.'),
-    post('ruth', 60 * 8, 'Week two in the new place. Took a drive out to the red rocks today.', { image_url: scene('mesa') }),
+    post('ruth', 60 * 8, 'Week two in the new place. Took a drive out to the red rocks today.', {
+      image_urls: [scene('mesa'), scene('field'), scene('dusk')], image_ratios: [800 / 600, 800 / 1000, 800 / 600],
+    }),
     post('me', 60 * 24 * 2, 'Welcome to Peaches, everyone! Post whatever you like. No algorithm, no ads, just us.', { image_url: scene('dawn') }),
     // a longer history for Maya, to show scrolling up into older posts
     ...[
@@ -145,6 +147,9 @@ export function makeDemoApi() {
   const person = (id) => db.people.find((p) => p.id === id);
   const decorate = (p) => ({
     ...p,
+    image_urls: p.image_urls ?? (p.image_url ? [p.image_url] : []),
+    image_url: p.image_urls?.[0] ?? p.image_url ?? null,
+    image_ratios: p.image_ratios ?? [],
     heart_count: db.hearts.filter((h) => h.post_id === p.id).length,
     comment_count: db.comments.filter((c) => c.post_id === p.id).length,
     hearted_by_me: db.hearts.some((h) => h.post_id === p.id && h.user_id === 'me'),
@@ -204,7 +209,7 @@ export function makeDemoApi() {
       const items = [];
       const mine = (p) => p.author_id === 'me';
       const post = (id) => db.posts.find((p) => p.id === id);
-      const snip = (p) => p.body || (p.image_url ? 'your photo' : p.link_url);
+      const snip = (p) => p.body || (p.image_url || p.image_urls?.length ? 'your photo' : p.link_url);
       for (const h of db.hearts) {
         const p = post(h.post_id);
         if (p && mine(p) && h.user_id !== 'me') items.push({ kind: 'heart_post', actor_id: h.user_id, post_id: p.id, post_author_id: 'me', snippet: snip(p), created_at: h.created_at });
@@ -263,7 +268,7 @@ export function makeDemoApi() {
         return {
           ...p,
           last_post_at: last?.created_at ?? null,
-          last_post_preview: last ? (last.body || (last.image_url ? '📷 Photo' : '🔗 Link')).slice(0, 140) : null,
+          last_post_preview: last ? (last.body || (last.image_url || last.image_urls?.length ? '📷 Photo' : '🔗 Link')).slice(0, 140) : null,
           post_count: mine.length,
           has_new: !!last && last.created_at > (db.views[p.id] ?? ''),
         };
@@ -278,11 +283,11 @@ export function makeDemoApi() {
         .sort((a, b) => b.created_at.localeCompare(a.created_at));
       return { posts: all.slice(0, 20).map(decorate), hasMore: all.length > 20 };
     },
-    async createPost({ body, file, link_url }) {
+    async createPost({ body, files = [], link_url }) {
       await wait(500);
       db.posts.push({
         id: 'p' + Math.random().toString(36).slice(2), author_id: 'me', body,
-        image_url: file ? URL.createObjectURL(file) : null, link_url: link_url || null,
+        image_urls: files.slice(0, 4).map((f) => URL.createObjectURL(f)), link_url: link_url || null,
         created_at: new Date().toISOString(), edited_at: null,
       });
     },

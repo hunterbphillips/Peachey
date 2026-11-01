@@ -733,3 +733,33 @@ html, body { overscroll-behavior-y: contain; }
   margin: 5px auto 16px;
   background: radial-gradient(circle 3px at 3px 3px, var(--peach-front) 98%, transparent) 0 0 / 12px 6px repeat-x;
 }
+
+/* ---------- photos: stacked, each full width ---------- */
+.post-photos { display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px; }
+.post-photos .post-photo { margin-bottom: 0; }
+.post-photo img[style] { object-fit: cover; }
+
+/* viewer: arrows and count when a post has several photos */
+.photo-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 1;
+  width: 44px; height: 44px; border-radius: 50%;
+  color: #2F2550; background: #FFFFFF; border: 2px solid #2F2550;
+}
+.photo-nav:hover { background: #FFFFFF; color: #2F2550; }
+.photo-nav:disabled { opacity: .3; }
+.photo-nav.prev { left: calc(12px + env(safe-area-inset-left, 0px)); }
+.photo-nav.next { right: calc(12px + env(safe-area-inset-right, 0px)); }
+.photo-count {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  padding: 3px 12px; border-radius: 12px;
+  font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;
+  color: #2F2550; background: #FFFFFF;
+}
+
+/* composer: thumbnails of the chosen photos */
+.composer-photos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.composer-thumb { position: relative; aspect-ratio: 1; border: 2px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.composer-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.composer-thumb .icon-btn.on-photo { top: 4px; right: 4px; width: 28px; height: 28px; }
+.tool-btn:disabled { opacity: .45; }

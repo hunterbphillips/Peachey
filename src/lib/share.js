@@ -28,9 +28,11 @@ export async function sharePost(post, authorName, isMine) {
   if (!navigator.share) return 'unsupported';
   const text = shareText(post, authorName, isMine);
   const data = { text };
-  if (post.image_url) {
-    const file = await photoFile(post.image_url);
-    if (file && navigator.canShare?.({ files: [file] })) data.files = [file];
+  const urls = post.image_urls?.length ? post.image_urls : post.image_url ? [post.image_url] : [];
+  if (urls.length) {
+    const files = (await Promise.all(urls.map(photoFile))).filter(Boolean)
+      .map((f, i) => new File([f], f.name.replace('peachey-photo', urls.length > 1 ? `peaches-photo-${i + 1}` : 'peaches-photo'), { type: f.type }));
+    if (files.length && navigator.canShare?.({ files })) data.files = files;
   }
   try {
     await navigator.share(data);

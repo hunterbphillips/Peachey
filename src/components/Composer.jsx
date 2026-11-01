@@ -4,29 +4,46 @@ import { ErrorNote, Sheet } from './ui.jsx';
 import { CloseIcon, LinkIcon, PhotoIcon } from './Icons.jsx';
 import { normalizeUrl } from '../lib/format.js';
 
-// New post, or editing one (text and link only; to change a photo,
+const MAX_PHOTOS = 4;
+
+// New post, or editing one (text and link only; to change photos,
 // delete the post and post again).
 export function Composer({ editing, onClose, onPosted }) {
   const [body, setBody] = useState(editing?.body ?? '');
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [photos, setPhotos] = useState([]); // [{ file, url }]
   const [showLink, setShowLink] = useState(!!editing?.link_url);
   const [link, setLink] = useState(editing?.link_url ?? '');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const fileRef = useRef(null);
 
-  useEffect(() => () => preview && URL.revokeObjectURL(preview), [preview]);
+  // tidy up preview images when they're no longer shown
+  const shown = useRef([]);
+  useEffect(() => { shown.current = photos; }, [photos]);
+  useEffect(() => () => shown.current.forEach((p) => URL.revokeObjectURL(p.url)), []);
 
   function pick(e) {
-    const f = e.target.files?.[0];
-    if (!f) return;
-    if (!f.type.startsWith('image/')) { setError('That file isn’t a photo.'); return; }
-    setFile(f); setPreview(URL.createObjectURL(f)); setError('');
+    const chosen = [...(e.target.files ?? [])];
+    e.target.value = '';
+    if (!chosen.length) return;
+    const images = chosen.filter((f) => f.type.startsWith('image/'));
+    const room = MAX_PHOTOS - photos.length;
+    if (images.length < chosen.length) setError('Some of those files weren’t photos.');
+    else if (images.length > room) setError(`A post can have up to ${MAX_PHOTOS} photos, so only the first ${room} were added.`);
+    else setError('');
+    setPhotos((ps) => [...ps, ...images.slice(0, room).map((file) => ({ file, url: URL.createObjectURL(file) }))]);
   }
 
+  function removePhoto(i) {
+    setPhotos((ps) => {
+      URL.revokeObjectURL(ps[i].url);
+      return ps.filter((_, j) => j !== i);
+    });
+  }
+
+  const existing = editing ? (editing.image_urls?.length ? editing.image_urls : editing.image_url ? [editing.image_url] : []) : [];
   const linkValue = showLink ? normalizeUrl(link) : '';
-  const hasImage = !!file || !!editing?.image_url;
+  const hasImage = photos.length > 0 || existing.length > 0;
   const canPost = !busy && linkValue !== null && (body.trim() || hasImage || linkValue);
 
   async function submit() {
@@ -34,7 +51,7 @@ export function Composer({ editing, onClose, onPosted }) {
     setBusy(true); setError('');
     try {
       if (editing) await api.updatePost(editing, { body: body.trim(), link_url: linkValue });
-      else await api.createPost({ body: body.trim(), file, link_url: linkValue });
+      else await api.createPost({ body: body.trim(), files: photos.map((p) => p.file), link_url: linkValue });
       onPosted();
     } catch (e) {
       setError(e.message);
@@ -42,13 +59,16 @@ export function Composer({ editing, onClose, onPosted }) {
     }
   }
 
+  const full = photos.length >= MAX_PHOTOS;
+
   return (
     <Sheet title={editing ? 'Edit post' : 'New post'} onClose={onClose}
       footer={
         <>
           {!editing && (
-            <button className={`tool-btn ${file ? 'on' : ''}`} onClick={() => fileRef.current.click()} aria-label="Add a photo">
-              <PhotoIcon /> <span>Photo</span>
+            <button className={`tool-btn ${photos.length ? 'on' : ''}`} onClick={() => fileRef.current.click()}
+              disabled={full} aria-label={full ? 'Four photos added' : 'Add photos'}>
+              <PhotoIcon /> <span>{photos.length ? `Photos ${photos.length}/${MAX_PHOTOS}` : 'Photos'}</span>
             </button>
           )}
           <button className={`tool-btn ${showLink ? 'on' : ''}`} onClick={() => setShowLink((s) => !s)} aria-label="Add a link">
@@ -63,14 +83,18 @@ export function Composer({ editing, onClose, onPosted }) {
       <textarea className="composer-text" rows={4} maxLength={2000} value={body}
         onChange={(e) => setBody(e.target.value)} placeholder="What’s new?" aria-label="Post text" />
 
-      {(preview || editing?.image_url) && (
-        <div className="composer-photo">
-          <img src={preview || editing.image_url} alt="Selected photo" />
-          {!editing && (
-            <button className="icon-btn on-photo" onClick={() => { setFile(null); setPreview(null); fileRef.current.value = ''; }} aria-label="Remove photo">
-              <CloseIcon />
-            </button>
-          )}
+      {(photos.length > 0 || existing.length > 0) && (
+        <div className="composer-photos">
+          {(editing ? existing.map((url) => ({ url })) : photos).map((p, i) => (
+            <div className="composer-thumb" key={p.url}>
+              <img src={p.url} alt={`Photo ${i + 1}`} />
+              {!editing && (
+                <button className="icon-btn on-photo" onClick={() => removePhoto(i)} aria-label={`Remove photo ${i + 1}`}>
+                  <CloseIcon width={16} height={16} />
+                </button>
+              )}
+            </div>
+          ))}
         </div>
       )}
 
@@ -82,7 +106,7 @@ export function Composer({ editing, onClose, onPosted }) {
         </label>
       )}
 
-      <input ref={fileRef} type="file" accept="image/*" hidden onChange={pick} />
+      <input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={pick} />
       <ErrorNote error={error} />
     </Sheet>
   );

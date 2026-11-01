@@ -36,3 +36,15 @@ export async function compressImage(file, { maxSize = 1600, square = false, qual
   if (!blob) throw new Error('Couldn’t read that photo. Try a JPEG or PNG.');
   return blob;
 }
+
+// Like compressImage, but also reports the photo's shape (width ÷ height),
+// which lets a row of photos be laid out before they finish loading.
+export async function compressPhoto(file) {
+  const blob = await compressImage(file);
+  let ratio = null;
+  try {
+    const bmp = await createImageBitmap(blob);
+    ratio = Math.round((bmp.width / bmp.height) * 1000) / 1000;
+  } catch { /* shape unknown; the app will measure it on load */ }
+  return { blob, ratio };
+}

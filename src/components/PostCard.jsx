@@ -12,17 +12,18 @@ export function PostCard({ post, me, author, onEdit, onDeleted, onChanged, start
   const [showComments, setShowComments] = useState(!!startWithComments);
   const [hearters, setHearters] = useState(null);
   const [pop, setPop] = useState(false);
-  const [viewing, setViewing] = useState(false);
-  // One tap opens the photo; a quick second tap hearts it instead.
+  const [viewing, setViewing] = useState(null); // index of the photo open full screen
+  // One tap opens a photo; a quick second tap hearts the post instead.
   const tapTimer = useRef(null);
-  function photoTap() {
+  function photoTap(i) {
     if (tapTimer.current) {
       clearTimeout(tapTimer.current); tapTimer.current = null;
       if (!p.hearted_by_me) toggleHeart();
       return;
     }
-    tapTimer.current = setTimeout(() => { tapTimer.current = null; setViewing(true); }, 260);
+    tapTimer.current = setTimeout(() => { tapTimer.current = null; setViewing(i); }, 260);
   }
+  const photos = p.image_urls?.length ? p.image_urls : p.image_url ? [p.image_url] : [];
   const mine = p.author_id === me.id;
 
   async function toggleHeart() {
@@ -74,11 +75,20 @@ export function PostCard({ post, me, author, onEdit, onDeleted, onChanged, start
         </p>
       )}
 
-      {p.image_url && (
-        <div className="post-photo">
-          <button className="photo-open" onClick={photoTap} aria-label="View photo full screen">
-            <img src={p.image_url} alt={p.body ? '' : 'Photo'} loading="lazy" draggable="false" />
-          </button>
+      {photos.length > 0 && (
+        <div className="post-photos">
+          {photos.map((u, i) => {
+            const r = p.image_ratios?.[i];
+            return (
+              <div className="post-photo" key={u}>
+                <button className="photo-open" onClick={() => photoTap(i)}
+                  aria-label={photos.length > 1 ? `View photo ${i + 1} of ${photos.length} full screen` : 'View photo full screen'}>
+                  <img src={u} alt={p.body ? '' : `Photo ${i + 1}`} loading="lazy" draggable="false"
+                    style={r ? { aspectRatio: String(r) } : undefined} />
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
 
@@ -131,14 +141,16 @@ export function PostCard({ post, me, author, onEdit, onDeleted, onChanged, start
 
       {shareFallback && (
         <div className="share-fallback">
-          <p>Send a copy of this post{p.image_url ? ' and its photo' : ''} outside Peaches.</p>
+          <p>Send a copy of this post{photos.length > 1 ? ' and its photos' : photos.length ? ' and its photo' : ''} outside Peaches.</p>
           <div className="share-options">
             {(p.body || p.link_url) && (
               <button className="pill-btn" onClick={copyText}>{copied ? 'Copied' : 'Copy text'}</button>
             )}
-            {p.image_url && (
-              <a className="pill-btn" href={p.image_url} target="_blank" rel="noopener noreferrer">Open photo</a>
-            )}
+            {photos.map((u, i) => (
+              <a key={u} className="pill-btn" href={u} target="_blank" rel="noopener noreferrer">
+                {photos.length > 1 ? `Open photo ${i + 1}` : 'Open photo'}
+              </a>
+            ))}
           </div>
           {manualText && (
             <textarea className="share-manual" readOnly rows={3} value={manualText}
@@ -151,7 +163,7 @@ export function PostCard({ post, me, author, onEdit, onDeleted, onChanged, start
         <p className="hearters">Hearted by {joinNames(hearters.map((h) => (h.user_id === me.id ? 'you' : h.display_name)))}</p>
       )}
 
-      {viewing && <PhotoViewer src={p.image_url} alt={p.body} onClose={() => setViewing(false)} />}
+      {viewing != null && <PhotoViewer srcs={photos} start={viewing} alt={p.body} onClose={() => setViewing(null)} />}
 
       {showComments && (
         <Comments postId={p.id} me={me}
@@ -160,3 +172,4 @@ export function PostCard({ post, me, author, onEdit, onDeleted, onChanged, start
     </article>
   );
 }
+

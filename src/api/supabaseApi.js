@@ -1,6 +1,6 @@
 import { groupActivity } from '../lib/activity.js';
 import { createClient } from '@supabase/supabase-js';
-import { compressImage } from '../lib/image.js';
+import { compressImage, compressPhoto } from '../lib/image.js';
 
 export function makeSupabaseApi(url, anonKey) {
   const sb = createClient(url, anonKey, {
@@ -162,23 +162,44 @@ export function makeSupabaseApi(url, anonKey) {
         .order('created_at', { ascending: false }).limit(PAGE);
       if (before) q = q.lt('created_at', before);
       const rows = check(await q);
+      const paths = (r) => (r.image_paths?.length ? r.image_paths : r.image_path ? [r.image_path] : []);
+      const get = await resolvePaths(rows.flatMap(paths));
       return {
-        posts: await withUrls(rows, [['image_path', 'image_url']]),
+        posts: rows.map((r) => {
+          const urls = paths(r).map(get).filter(Boolean);
+          return { ...r, image_urls: urls, image_url: urls[0] ?? null };
+        }),
         hasMore: rows.length === PAGE,
       };
     },
-    async createPost({ body, file, link_url }) {
+    async createPost({ body, files = [], link_url }) {
       const me = await uid();
-      let image_path = null;
-      if (file) image_path = await upload('posts', await compressImage(file));
-      check(await sb.from('posts').insert({ author_id: me, body, image_path, link_url: link_url || null }));
+      const image_paths = [];
+      const image_ratios = [];
+      for (const f of files.slice(0, 4)) {
+        const { blob, ratio } = await compressPhoto(f);
+        image_paths.push(await upload('posts', blob));
+        image_ratios.push(ratio ?? 1);
+      }
+      const { error } = await sb.from('posts').insert({
+        author_id: me, body, link_url: link_url || null,
+        image_path: image_paths[0] ?? null, image_paths, image_ratios,
+      });
+      if (error && /image_paths|image_ratios/.test(error.message)) {
+        // The multiple-photos update (06) hasn't been run yet: keep the first photo only.
+        if (image_paths.length > 1) await sb.storage.from('photos').remove(image_paths.slice(1));
+        check(await sb.from('posts').insert({ author_id: me, body, link_url: link_url || null, image_path: image_paths[0] ?? null }));
+      } else if (error) {
+        throw new Error(error.message);
+      }
     },
     async updatePost(post, { body, link_url }) {
       check(await sb.from('posts').update({ body, link_url: link_url || null }).eq('id', post.id));
     },
     async deletePost(post) {
       check(await sb.from('posts').delete().eq('id', post.id));
-      if (post.image_path) await sb.storage.from('photos').remove([post.image_path]);
+      const paths = post.image_paths?.length ? post.image_paths : post.image_path ? [post.image_path] : [];
+      if (paths.length) await sb.storage.from('photos').remove(paths);
     },
 
     // ---- hearts

@@ -98,7 +98,14 @@ export function makeSupabaseApi(url, anonKey) {
         const blob = await compressImage(avatarFile, { maxSize: 480, square: true });
         patch.avatar_path = await upload('avatar', blob);
       }
-      check(await sb.from('profiles').update(patch).eq('id', me));
+      const { error } = await sb.from('profiles').update(patch).eq('id', me);
+      if (error && /show_last_seen/.test(error.message)) {
+        // The last-seen update (05) hasn't been run yet: save everything else.
+        delete patch.show_last_seen;
+        check(await sb.from('profiles').update(patch).eq('id', me));
+      } else if (error) {
+        throw new Error(error.message);
+      }
     },
 
     // ---- reports and looking after the group

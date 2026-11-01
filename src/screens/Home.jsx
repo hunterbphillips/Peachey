@@ -9,17 +9,22 @@ export function Home({ me, go, onCompose, refreshKey }) {
   const [friends, setFriends] = useState(null);
   const [requests, setRequests] = useState(0);
   const [unread, setUnread] = useState(0);
+  const [myLast, setMyLast] = useState(undefined); // undefined = loading, null = no posts yet
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
     try {
-      const [f, members, u] = await Promise.all([api.listFriends(), api.listMembers(), api.activityUnread().catch(() => 0)]);
+      const [f, members, u, mine] = await Promise.all([
+        api.listFriends(), api.listMembers(), api.activityUnread().catch(() => 0),
+        api.listPosts(me.id).catch(() => ({ posts: [] })),
+      ]);
       setFriends(f);
+      setMyLast(mine.posts[0] ?? null);
       setUnread(u);
       setRequests(members.filter((m) => m.status === 'received').length);
       setError('');
     } catch (e) { setError(e.message); }
-  }, []);
+  }, [me.id]);
   useEffect(() => { load(); }, [load, refreshKey]);
   useRefreshOnFocus(load);
 
@@ -47,6 +52,28 @@ export function Home({ me, go, onCompose, refreshKey }) {
       </header>
 
       <main className="page">
+        <ul className="friend-list me-list">
+          <li>
+            <button className="friend-row" onClick={() => go(`/u/${me.id}`)} aria-label="Your page">
+              <Avatar person={me} size={50} />
+              <span className="friend-main">
+                <span className="me-line">
+                  <span className="friend-name">{me.display_name}</span>
+                  <span className="me-tag">Your page</span>
+                </span>
+                <span className="friend-line">
+                  <span className="friend-preview">
+                    {myLast === undefined ? '\u00a0'
+                      : myLast ? (myLast.body || (myLast.image_urls?.length || myLast.image_url ? '📷 Photo' : '🔗 Link'))
+                      : 'Nothing posted yet'}
+                  </span>
+                  {myLast && <time dateTime={myLast.created_at}>{timeAgo(myLast.created_at)}</time>}
+                </span>
+              </span>
+            </button>
+          </li>
+        </ul>
+
         <div className="home-intro">
           <h1>Friends</h1>
           <p>{friends == null ? ' ' : newCount === 0 ? 'You’re all caught up.' : `${newCount} with something new`}</p>

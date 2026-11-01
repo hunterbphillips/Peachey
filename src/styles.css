@@ -798,3 +798,12 @@ html, body { overscroll-behavior-y: contain; }
 .person-row { flex-wrap: wrap; }
 .person-row .menu { flex: none; }
 .danger-text { color: var(--danger); text-decoration-color: currentColor; }
+
+/* ---------- the "your page" box above Friends ---------- */
+.me-list { margin-top: 6px; }
+.me-line { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.me-tag {
+  flex: none; font-size: 12px; font-weight: 700; line-height: 1;
+  padding: 4px 9px; border-radius: 10px;
+  color: var(--on-bright); background: var(--peach-front);
+}

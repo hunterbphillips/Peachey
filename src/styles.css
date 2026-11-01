@@ -811,3 +811,15 @@ html, body { overscroll-behavior-y: contain; }
 
 /* "hasn't posted yet" / "aren't friends yet": sit well below the header */
 .feed-page > .empty { padding-top: max(80px, 24vh); }
+
+/* ---------- profile photo cropper ---------- */
+.cropper-box {
+  position: relative; width: 100%; aspect-ratio: 1; max-height: 58vh;
+  border-radius: var(--r); overflow: hidden; border: 2px solid var(--line);
+  background: #1d1a2e; touch-action: none;
+}
+.cropper-box .reactEasyCrop_CropArea { border: 2px solid #fff; box-shadow: 0 0 0 9999em rgba(29, 26, 46, .55); }
+.zoom-row { display: flex; align-items: center; gap: 12px; padding: 2px 4px; }
+.zoom-row input { flex: 1; accent-color: var(--peach-front); }
+.zoom-small, .zoom-big { font-weight: 700; color: var(--ink-soft); width: 14px; text-align: center; }
+.zoom-big { font-size: 20px; }

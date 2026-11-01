@@ -1,7 +1,8 @@
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { api } from '../api/index.js';
 import { Avatar, ConfirmBar, ErrorNote } from '../components/ui.jsx';
 import { BackIcon } from '../components/Icons.jsx';
+import { AvatarCropper } from '../components/AvatarCropper.jsx';
 
 export function EditProfile({ me, go, onSaved }) {
   const [name, setName] = useState(me.display_name);
@@ -12,6 +13,8 @@ export function EditProfile({ me, go, onSaved }) {
   const [error, setError] = useState('');
   const fileRef = useRef(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [cropSrc, setCropSrc] = useState(null);   // photo being positioned
+  const cancelCrop = useCallback(() => setCropSrc(null), []);
 
   async function save(e) {
     e.preventDefault();
@@ -36,7 +39,8 @@ export function EditProfile({ me, go, onSaved }) {
             <button type="button" className="pill-btn" onClick={() => fileRef.current.click()}>Change photo</button>
             <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => {
               const f = e.target.files?.[0];
-              if (f) { setFile(f); setPreview(URL.createObjectURL(f)); }
+              e.target.value = '';           // so picking the same photo again still opens the cropper
+              if (f) setCropSrc(URL.createObjectURL(f));
             }} />
           </div>
           <label className="field">
@@ -66,6 +70,11 @@ export function EditProfile({ me, go, onSaved }) {
           )}
         </form>
       </main>
+      {cropSrc && (
+        <AvatarCropper src={cropSrc} onCancel={cancelCrop} onDone={(blob) => {
+          setFile(blob); setPreview(URL.createObjectURL(blob)); setCropSrc(null);
+        }} />
+      )}
     </>
   );
 }

@@ -55,7 +55,7 @@ export function Home({ me, go, onCompose, refreshKey }) {
               <span className="friend-main">
                 <span className="me-line">
                   <span className="friend-name">{me.display_name}</span>
-                  <span className="me-tag">your page</span>
+                  <span className="me-tag">YOU</span>
                 </span>
                 <span className="friend-line">
                   <span className="friend-preview">

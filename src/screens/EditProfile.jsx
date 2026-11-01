@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { api } from '../api/index.js';
-import { Avatar, ErrorNote } from '../components/ui.jsx';
+import { Avatar, ConfirmBar, ErrorNote } from '../components/ui.jsx';
 import { BackIcon } from '../components/Icons.jsx';
 
 export function EditProfile({ me, go, onSaved }) {
@@ -11,6 +11,7 @@ export function EditProfile({ me, go, onSaved }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const fileRef = useRef(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   async function save(e) {
     e.preventDefault();
@@ -53,6 +54,17 @@ export function EditProfile({ me, go, onSaved }) {
           <ErrorNote error={error} />
           <button className="gel-btn wide" disabled={busy || !name.trim()}>{busy ? 'Saving…' : 'Save profile'}</button>
           <button type="button" className="text-btn" onClick={() => api.signOut()}>Sign out</button>
+          {!me.is_admin && !confirmDelete && (
+            <button type="button" className="text-btn danger-text" onClick={() => setConfirmDelete(true)}>Delete my account</button>
+          )}
+          {confirmDelete && (
+            <ConfirmBar text="Delete your account? Your posts, photos, comments and hearts are erased for good. This can’t be undone."
+              action="Delete my account" onCancel={() => setConfirmDelete(false)}
+              onConfirm={async () => {
+                try { await api.deleteMyAccount(); }
+                catch (err) { setError(err.message); setConfirmDelete(false); }
+              }} />
+          )}
         </form>
       </main>
     </>

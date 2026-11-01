@@ -28,6 +28,7 @@ function describe(item, me) {
     case 'friend_request': return <>{who} wants to be friends</>;
     case 'friend_accepted': return <>{who} accepted your friend request</>;
     case 'joined': return <>{who} joined Peaches with your invite</>;
+    case 'report': return <>{who} reported a post by {item.post_author_name}</>;
     default: return who;
   }
 }
@@ -53,6 +54,7 @@ export function Activity({ me, go, onSeen }) {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function open(item) {
+    if (item.kind === 'report') { go('/reports'); return; }
     if (item.post_id) {
       const comments = item.kind === 'comment' || item.kind === 'thread_comment' || item.kind === 'heart_comment';
       go(`/u/${item.post_author_id}/p/${item.post_id}${comments ? '/c' : ''}`);

@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api/index.js';
-import { Avatar, Spinner } from '../components/ui.jsx';
-import { BackIcon } from '../components/Icons.jsx';
+import { Avatar, ConfirmBar, Menu, Spinner } from '../components/ui.jsx';
+import { BackIcon, MoreIcon } from '../components/Icons.jsx';
 import { FriendButton } from '../components/FriendButton.jsx';
 import { useRefreshOnFocus } from '../lib/hooks.js';
 
-export function People({ go, onRequestsChanged }) {
+export function People({ me, go, onRequestsChanged }) {
+  const [removing, setRemoving] = useState(null);
   const [members, setMembers] = useState(null);
   const [error, setError] = useState('');
 
@@ -33,6 +34,20 @@ export function People({ go, onRequestsChanged }) {
         </span>
       </button>
       <FriendButton person={m} status={m.status} onChange={(s) => setStatus(m.id, s)} />
+      {me?.is_admin && (
+        <Menu label={`Admin options for ${m.display_name}`} trigger={<MoreIcon width={18} height={18} />} items={[
+          { label: 'Remove from Peaches', onClick: () => setRemoving(m.id), danger: true },
+        ]} />
+      )}
+      {removing === m.id && (
+        <ConfirmBar text={`Remove ${m.display_name} from Peaches? Their account, posts, photos, comments and hearts are erased for good.`}
+          action="Remove" onCancel={() => setRemoving(null)}
+          onConfirm={async () => {
+            await api.removeMember(m.id);
+            setRemoving(null);
+            setMembers((list) => list.filter((x) => x.id !== m.id));
+          }} />
+      )}
     </li>
   );
 

@@ -149,7 +149,7 @@ export function Feed({ userId, me, go, onCompose, onEdit, refreshKey, focusPostI
   const menuItems = isMe
     ? [
       { label: 'Edit profile', onClick: () => go('/me/edit') },
-      ...(me.is_admin ? [{ label: 'Invite codes', onClick: () => go('/invites') }] : []),
+      ...(me.is_admin ? [{ label: 'Invite codes', onClick: () => go('/invites') }, { label: 'Reports', onClick: () => go('/reports') }] : []),
     ]
     : status === 'friends'
       ? [{ label: 'Remove friend', onClick: () => setConfirmUnfriend(true), danger: true }]

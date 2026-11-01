@@ -10,6 +10,7 @@ import { EditProfile } from './screens/EditProfile.jsx';
 import { Invites } from './screens/Invites.jsx';
 import { People } from './screens/People.jsx';
 import { Activity } from './screens/Activity.jsx';
+import { Reports } from './screens/Reports.jsx';
 import { PullToRefresh, pullToRefreshAvailable } from './components/PullToRefresh.jsx';
 
 const readRoute = () => window.location.hash.replace(/^#/, '') || '/';
@@ -76,12 +77,14 @@ export function App() {
     if (m) {
       screen = <Feed key={m[1]} userId={m[1]} me={me} go={go} onCompose={compose} onEdit={edit} refreshKey={refreshKey}
         focusPostId={m[2]} openComments={!!m[3]} />;
+    } else if (route === '/reports') {
+      screen = <Reports key={`reports-${refreshKey}`} me={me} go={go} />;
     } else if (route === '/activity') {
       screen = <Activity key={`activity-${refreshKey}`} me={me} go={go} />;
     } else if (route === '/me/edit') {
       screen = <EditProfile me={me} go={go} onSaved={loadMe} />;
     } else if (route === '/people') {
-      screen = <People key={`people-${refreshKey}`} go={go} />;
+      screen = <People key={`people-${refreshKey}`} me={me} go={go} />;
     } else if (route === '/invites') {
       screen = <Invites key={`invites-${refreshKey}`} me={me} go={go} />;
     } else {

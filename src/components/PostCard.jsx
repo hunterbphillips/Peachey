@@ -41,6 +41,15 @@ export function PostCard({ post, me, author, onEdit, onDeleted, onChanged, start
   }
 
   const [confirming, setConfirming] = useState(false);
+  const [reporting, setReporting] = useState(false);
+  const [reportNote, setReportNote] = useState('');
+  const [reported, setReported] = useState(false);
+  const [reportError, setReportError] = useState('');
+  async function sendReport() {
+    setReportError('');
+    try { await api.reportPost(p.id, reportNote.trim()); setReported(true); setReporting(false); }
+    catch (e) { setReportError(e.message); }
+  }
   async function remove() {
     await api.deletePost(p);
     onDeleted(p.id);
@@ -132,12 +141,33 @@ export function PostCard({ post, me, author, onEdit, onDeleted, onChanged, start
             ]} />
           </span>
         )}
+        {!mine && !me.is_admin && (
+          <span className="post-menu">
+            <Menu label="Post options" trigger={<MoreIcon />} items={[
+              { label: reported ? 'Reported' : 'Report post', onClick: () => !reported && setReporting(true) },
+            ]} />
+          </span>
+        )}
       </div>
 
       {confirming && (
         <ConfirmBar text="Delete this post and its hearts and comments?" action="Delete post"
           onCancel={() => setConfirming(false)} onConfirm={remove} />
       )}
+
+      {reporting && (
+        <div className="report-box" role="group" aria-label="Report this post">
+          <p><strong>Report this post to the admin?</strong> They’ll see this post and your note, and can remove it. {author?.display_name?.split(' ')[0] ?? 'The author'} won’t be told who reported it.</p>
+          <textarea rows={2} maxLength={300} value={reportNote} onChange={(e) => setReportNote(e.target.value)}
+            placeholder="What’s wrong? (optional)" aria-label="Note for the admin" />
+          {reportError && <p className="error-note" role="alert">{reportError}</p>}
+          <div className="row-end">
+            <button className="text-btn" onClick={() => setReporting(false)}>Cancel</button>
+            <button className="gel-btn small" onClick={sendReport}>Send report</button>
+          </div>
+        </div>
+      )}
+      {reported && <p className="report-done">Reported. Thanks for letting the admin know.</p>}
 
       {shareFallback && (
         <div className="share-fallback">

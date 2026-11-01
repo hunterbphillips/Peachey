@@ -763,3 +763,38 @@ html, body { overscroll-behavior-y: contain; }
 .composer-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .composer-thumb .icon-btn.on-photo { top: 4px; right: 4px; width: 28px; height: 28px; }
 .tool-btn:disabled { opacity: .45; }
+
+/* ---------- reporting and the admin's reports ---------- */
+.report-box {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 12px 14px; margin: 2px 0 10px;
+  border-radius: var(--r); background: var(--cloud);
+  border: 2px solid var(--line); box-shadow: 4px 4px 0 var(--hard);
+}
+.report-box p { font-size: 15px; }
+.report-box textarea {
+  width: 100%; resize: none; font-size: 15.5px; padding: 9px 12px;
+  border: 2px solid var(--line); border-radius: var(--r); background: var(--cloud);
+}
+.report-box .row-end { margin-top: 0; }
+.report-done { font-size: 14px; color: var(--ink-faint); padding: 0 0 8px; }
+.report-card {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 14px 16px; border-radius: 14px;
+  background: var(--cloud); border: 2px solid var(--line); box-shadow: 4px 4px 0 var(--hard);
+}
+.report-who { font-size: 15.5px; }
+.report-who strong { font-family: var(--display); font-weight: 400; font-size: 17px; }
+.report-who span { color: var(--ink-faint); font-size: 14px; }
+.report-note { color: var(--ink-soft); }
+.report-post {
+  margin: 0; padding: 10px 14px; border-left: 3px solid var(--strawberry);
+  background: var(--sky-hi); border-radius: 0 var(--r) var(--r) 0;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.report-post p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.report-link, .report-photos, .report-posted { font-size: 14px; color: var(--ink-faint); display: flex; align-items: center; gap: 6px; }
+.person-row .confirm-bar { margin: 0 0 8px 10px; }
+.person-row { flex-wrap: wrap; }
+.person-row .menu { flex: none; }
+.danger-text { color: var(--danger); text-decoration-color: currentColor; }

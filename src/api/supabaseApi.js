@@ -101,6 +101,35 @@ export function makeSupabaseApi(url, anonKey) {
       check(await sb.from('profiles').update(patch).eq('id', me));
     },
 
+    // ---- reports and looking after the group
+    async reportPost(postId, note) {
+      check(await sb.rpc('report_post', { post: postId, note: note || '' }));
+    },
+    async adminReports() {
+      return check(await sb.rpc('admin_reports'));
+    },
+    async dismissReport(reportId) {
+      check(await sb.rpc('admin_dismiss_report', { report: reportId }));
+    },
+    // Removes the post, then exactly its photo files (the only ones the admin may delete).
+    async adminDeletePost(postId) {
+      const paths = check(await sb.rpc('admin_delete_post', { post: postId })) ?? [];
+      if (paths.length) await sb.storage.from('photos').remove(paths);
+      await sb.rpc('admin_clear_cleanup', { paths });
+    },
+    async removeMember(memberId) {
+      const paths = check(await sb.rpc('admin_remove_member', { member: memberId })) ?? [];
+      if (paths.length) await sb.storage.from('photos').remove(paths);
+      await sb.rpc('admin_clear_cleanup', { paths });
+    },
+    // Deletes my photo files first (I'm allowed to), then my account and everything in it.
+    async deleteMyAccount() {
+      const paths = check(await sb.rpc('my_photo_paths')) ?? [];
+      if (paths.length) await sb.storage.from('photos').remove(paths);
+      check(await sb.rpc('delete_my_account'));
+      await sb.auth.signOut();
+    },
+
     // ---- last seen
     async touchPresence() {
       await sb.rpc('touch_presence');

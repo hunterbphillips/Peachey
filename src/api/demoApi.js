@@ -41,7 +41,9 @@ function scene(kind) {
 }
 
 function initialData() {
-  const me = { id: 'me', display_name: 'Hunter', avatar_url: null, is_admin: true, show_last_seen: true };
+  // Add ?member to the demo's address to see Peaches as a regular member instead of the admin.
+  const asMember = new URLSearchParams(window.location.search).has('member');
+  const me = { id: 'me', display_name: 'Hunter', avatar_url: null, is_admin: !asMember, show_last_seen: true };
   const friends = [
     { id: 'maya',  display_name: 'Maya Chen',     bio: 'Garden person. Bad at houseplants, good at tomatoes.' },
     { id: 'theo',  display_name: 'Theo Alvarez',  bio: 'Bikes, bread, long walks.' },
@@ -137,7 +139,9 @@ function initialData() {
     { kind: 'joined', actor: 'ruth', at: ago(60 * 24 * 15) },
     { kind: 'friend_accepted', actor: 'priya', at: ago(60 * 24 * 16) },
   ];
-  return { me, people: [me, ...friends], posts, hearts, comments, commentHearts, friendEvents, views, invites, friendships,
+  // One report waiting, so the admin's Reports screen has something to show.
+  const reports = [{ id: 'r1', post_id: 'p2', reporter_id: 'priya', note: 'Forty is too many zucchini to joke about.', created_at: ago(30) }];
+  return { me, people: [me, ...friends], posts, hearts, comments, commentHearts, friendEvents, views, invites, friendships, reports,
     activitySeenAt: ago(60 * 3), signedIn: true, member: true };
 }
 
@@ -198,6 +202,46 @@ export function makeDemoApi() {
         .map((p) => ({ ...p, status: db.friendships[p.id] ?? 'none' }))
         .sort((a, b) => ((b.status === 'received') - (a.status === 'received')) || a.display_name.localeCompare(b.display_name));
     },
+    async reportPost(postId, note) {
+      await wait(250);
+      db.reports = db.reports.filter((r) => !(r.post_id === postId && r.reporter_id === 'me'));
+      db.reports.push({ id: 'r' + Math.random().toString(36).slice(2), post_id: postId, reporter_id: 'me', note: note || '', created_at: new Date().toISOString() });
+    },
+    async adminReports() {
+      await wait();
+      return db.reports.map((r) => {
+        const p = db.posts.find((x) => x.id === r.post_id);
+        if (!p) return null;
+        const rep = person(r.reporter_id), au = person(p.author_id);
+        return {
+          report_id: r.id, post_id: p.id, note: r.note, reported_at: r.created_at,
+          reporter_id: rep.id, reporter_name: rep.display_name, author_id: au.id, author_name: au.display_name,
+          body: p.body, link_url: p.link_url, photo_count: (p.image_urls?.length ?? (p.image_url ? 1 : 0)), posted_at: p.created_at,
+        };
+      }).filter(Boolean).sort((a, b) => b.reported_at.localeCompare(a.reported_at));
+    },
+    async dismissReport(id) { await wait(150); db.reports = db.reports.filter((r) => r.id !== id); },
+    async adminDeletePost(postId) {
+      await wait(250);
+      db.posts = db.posts.filter((p) => p.id !== postId);
+      db.reports = db.reports.filter((r) => r.post_id !== postId);
+      db.comments = db.comments.filter((c) => c.post_id !== postId);
+      db.hearts = db.hearts.filter((h) => h.post_id !== postId);
+    },
+    async removeMember(id) {
+      await wait(300);
+      db.people = db.people.filter((p) => p.id !== id);
+      db.posts = db.posts.filter((p) => p.author_id !== id);
+      db.comments = db.comments.filter((c) => c.author_id !== id && db.posts.some((p) => p.id === c.post_id));
+      db.hearts = db.hearts.filter((h) => h.user_id !== id);
+      db.reports = db.reports.filter((r) => r.reporter_id !== id && db.posts.some((p) => p.id === r.post_id));
+      db.friendEvents = db.friendEvents.filter((e) => e.actor !== id);
+      delete db.friendships[id];
+    },
+    async deleteMyAccount() {
+      await wait(300);
+      throw new Error('This is the demo, so your account stays put. (In the real app, the admin’s account can’t be deleted either.)');
+    },
     async touchPresence() {},
     async lastSeen(id) {
       await wait(80);
@@ -226,6 +270,12 @@ export function makeDemoApi() {
       for (const h of db.commentHearts) {
         const c = db.comments.find((x) => x.id === h.comment_id);
         if (c && c.author_id === 'me' && h.user_id !== 'me') items.push({ kind: 'heart_comment', actor_id: h.user_id, post_id: c.post_id, post_author_id: post(c.post_id)?.author_id, snippet: c.body, created_at: h.created_at });
+      }
+      if (db.me.is_admin) {
+        for (const r of db.reports) {
+          const p = post(r.post_id);
+          if (p) items.push({ kind: 'report', actor_id: r.reporter_id, post_id: p.id, post_author_id: p.author_id, snippet: r.note || null, created_at: r.created_at });
+        }
       }
       for (const e of db.friendEvents) {
         if (e.kind === 'friend_request' && db.friendships[e.actor] !== 'received') continue;

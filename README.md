@@ -49,7 +49,8 @@ fine). Claude can push the code into it for you.
    `supabase/03_comment_hearts.sql` (hearts on comments) and
    `supabase/04_activity.sql` (the Activity screen) and
    `supabase/05_last_seen.sql` ("last seen" on profiles) and
-   `supabase/06_multiple_photos.sql` (up to four photos per post), in that order.
+   `supabase/06_multiple_photos.sql` (up to four photos per post) and
+   `supabase/07_admin_tools.sql` (reports, removing members, deleting accounts), in that order.
 3. In **Project Settings → API**, copy the **Project URL** and the
    **anon / public** key. Never share the `service_role` key.
 
@@ -108,8 +109,15 @@ copy a ready-made invite message for each code or make 10 more.
   only friends can see each other’s posts, and people can only change or
   delete their own posts, comments, hearts and photos. Photos live in a
   private bucket and are shown through short-lived links.
-- **Removing someone:** in Supabase, open Authentication → Users and delete
-  them. Their profile, posts and comments go with them.
+- **Looking after the group:** friends can report a post; you see only that
+  post under **Reports** (your profile's ••• menu) and can delete it or dismiss
+  the report. **Remove from Peaches** is in the People list's ••• menu, and
+  anyone except the admin can delete their own account in Edit profile.
+  Removals erase posts, photos, comments and hearts for good.
+- **What the admin can and can't see:** in the app, the admin sees only
+  friends' posts, like everyone else, plus posts someone reports. The Supabase
+  dashboard can show everything, so treat it as off-limits except to fix
+  something that's broken.
 
 ## Working on the code
 
@@ -133,3 +141,4 @@ Code layout:
 - `supabase/04_activity.sql` — the Activity screen (run after 03_comment_hearts.sql)
 - `supabase/05_last_seen.sql` — "last seen" for friends, with an off switch (run after 04_activity.sql)
 - `supabase/06_multiple_photos.sql` — up to four photos per post (run after 05_last_seen.sql)
+- `supabase/07_admin_tools.sql` — reports, removing members, deleting accounts (run after 06_multiple_photos.sql)

@@ -808,3 +808,6 @@ html, body { overscroll-behavior-y: contain; }
   padding: 4px 8px; border-radius: 10px;
   color: var(--on-bright); background: var(--peach-front);
 }
+
+/* "hasn't posted yet" / "aren't friends yet": sit well below the header */
+.feed-page > .empty { padding-top: max(80px, 24vh); }
